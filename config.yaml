@@ -1,0 +1,135 @@
+secret_key: "S8LvTo9QsFfErZ4C4vdyZZ13Euu3HVeUk8gaEBzWQBc="
+key_vault_name: OliviaAI
+
+api_config:
+  base_url: "https://api.olivia-tgdk.com"
+  endpoints:
+    send: "send_data"
+    fetch: "fetch_data"
+    update: "update_data"
+    delete: "delete_data"
+  headers:
+    Content-Type: "application/json"
+
+compliance_standards:
+  - ISO27001
+  - GDPR
+  - HIPAA
+monitoring_interval: 120
+flask:
+  secret_key: "yoym7UplMPS8dHJsV2nIOTYYaOlVAF4dPwZeFrhbo6M="
+  host: "0.0.0.0"
+  port: 8080
+key_vault:
+  uri: "https://oliviaai.vault.azure.net"
+  name: "OliviaAI"
+  secret_name: "AZURE-SENTINAL-WORKSPACE-ID"
+
+duoquadrilinear_pathing:
+  grid_size: 10
+  start: [0, 0]
+  end: [9, 9]
+
+base_data:
+  velocity: 10.0
+  mass: 70.0
+  force: 100.0
+
+siem:
+  workspace_id: "QuantumO"
+  primary_key: "YOUR_PRIMARY_KEY"
+  log_type: "CustomLogType"
+  url: "https://QuantumO.ods.opinsights.azure.com/api/logs?api-version=2016-04-01"
+
+event_hub:
+  connection_string: "Endpoint=sb://oliviaaiquantum.servicebus.windows.net/;SharedAccessKeyName=SteelOx;SharedAccessKey=7lkwV3XKVE4fqF1dkAqsOlhz7W0Eslw9l+AEhArbOI0="
+  name: "SteelOx"
+  primary_key: "7lkwV3XKVE4fqF1dkAqsOlhz7W0Eslw9l+AEhArbOI0="
+  log_type: "SteelOx"
+
+network_ranges: ["192.168.1.0/24", "10.0.0.0/16"]
+
+cache:
+  max_size: 1000
+
+rate_limiter:
+  rate_limit: 10
+  per: 1
+
+load_balancer:
+  servers:
+    - "Server1"
+    - "Server2"
+    - "Server3"
+
+oauth:
+  microsoft:
+    client_id: "82492d84-fe22-44c1-815d-89bd69b3e5e1"
+    client_secret: "l4c8Q~clUSoq4F1MNKTvDGnEnQLxd53RQBTKUc9B"
+    authorize_url: "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
+    access_token_url: "https://login.microsoftonline.com/common/oauth2/v2.0/token"
+    redirect_uri: "/auth/microsoft/callback"
+    scope: "User.Read"
+    tenant_id: "c73c0861-c6e4-41e9-944f-ba983c0fc9ab"
+
+azure_sql:
+  driver: "{ODBC Driver 18 for SQL Server}"
+  connection_string: "Driver={ODBC Driver 18 for SQL Server};Server=tcp:oliviacloudless.database.windows.net,1433;Database=so1;Persist Security Info=False;Uid=steeloxsuperuser;Pwd={distribution_sequencer1};MultipleActiveResultSets=False;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
+  server: "oliviacloudless.privatelink.database.windows.net"
+  database: "so1"
+  username: "steeloxsuperuser"
+  password: "distribution_sequencer1"
+  encrypt: "yes"
+  trust_server_certificate: "no"
+
+quantum_workspace:
+  connection_string: "SubscriptionId=b282c457-292d-4181-96a4-169ac357585a;ResourceGroupName=OliviaAI_group;WorkspaceName=OliviaAIQuantum;ApiKey=IBbaMD-IkLaILI8qTFlbb9_RFCpTAVptC1APW75nK45sz9o0DGT6Nz2SQxzu2WaRwUENBThzYyykAZQUPUdDvw;QuantumEndpoint=https://japaneast.quantum.azure.com/"
+  resource_id: "/subscriptions/b282c457-292d-4181-96a4-169ac357585a/resourceGroups/OliviaAI_group/providers/Microsoft.Quantum/Workspaces/OliviaAIQuantum"
+  workspace_name: "OliviaAIQuantum"
+  workspace_location: "japaneast"
+  resource_group: "OliviaAI_group"
+  subscription_id: "b282c457-292d-4181-96a4-169ac357585a"
+  backend_name: "ionq"
+
+steelox:
+  connection_string: "Driver={ODBC Driver 18 for SQL Server};Server=tcp:oliviacloudless.database.windows.net,1433;Database=so1;Uid={steeloxsuperuser};Pwd={distribution_sequencer1};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
+  secret_key: "DYJFBEdn599wMQMjR0WDSa8M2vEo4LQqNQvXhx-mJJ4="
+  network_ranges:
+    - "10.0.0.0/24"
+    - "192.168.1.0/24"
+  resource_id: "/subscriptions/b282c457-292d-4181-96a4-169ac357585a/resourceGroups/OliviaAI_group/providers/Microsoft.Sql/servers/oliviacloudless/databases/so1"
+
+user_data:
+  created_by: "sean.tichenor@olivia-tgdk.com"
+  created_at: "2024-10-22T15:56:17.0274782Z"
+  last_modified_by: "sean.tichenor@olivia-tgdk.com"
+  last_modified_at: "2024-10-22T15:56:17.0274782Z"
+  principal_id: "e9574ddf-75a9-42f6-a28f-ca7aa22699c3"
+  tenant_id: "c73c0861-c6e4-41e9-944f-ba983c0fc9ab"
+  identity_type: "SystemAssigned"
+
+azure_quantum:
+  connection_string: "SubscriptionId=b282c457-292d-4181-96a4-169ac357585a;ResourceGroupName=OliviaAI_group;WorkspaceName=OliviaAIQuantum;QuantumEndpoint=https://japaneast.quantum.azure.com/"
+  workspace_name: "OliviaAIQuantum"
+  workspace_location: "japaneast"
+  subscription_id: "b282c457-292d-4181-96a4-169ac357585a"
+  resource_group: "OliviaAI_group"
+
+identity_information:
+  principal_id: "e9574ddf-75a9-42f6-a28f-ca7aa22699c3"
+  tenant_id: "c73c0861-c6e4-41e9-944f-ba983c0fc9ab"
+  identity_type: "SystemAssigned"
+  created_by: "sean.tichenor@olivia-tgdk.com"
+  created_at: "2024-10-22T15:56:17.0274782Z"
+  last_modified_by: "sean.tichenor@olivia-tgdk.com"
+  last_modified_at: "2024-10-22T15:56:17.0274782Z"
+
+storage_account:
+  id: "/subscriptions/b282c457-292d-4181-96a4-169ac357585a/resourceGroups/OliviaAI_group/providers/Microsoft.Storage/storageAccounts/oliviaaiqu"
+  name: "oliviaaiqu"
+  location: "japaneast"
+
+siem_integration:
+  workspace_id: "3bf281e6-db4d-4cac-97b5-fcf57944dba6"
+  endpoint: "https://3bf281e6-db4d-4cac-97b5-fcf57944dba6.ods.opinsights.azure.com/api/logs?api-version=2016-04-01"
+  region: "japaneast"
