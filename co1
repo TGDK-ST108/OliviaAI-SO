@@ -1,0 +1,25 @@
+# OliviaAI Chat App with Advanced Graphics and Defense Mechanism
+class OliviaAIChatAppWithQuantumPortal:
+    def __init__(self):
+        self.olivia_ai = OliviaAI()  # Initialize OliviaAI instance
+
+    def chat(self):
+        """Allows user to chat with OliviaAI and query information."""
+        print("You can now chat with OliviaAI. Type 'exit' to quit.")
+        while True:
+            user_query = input("You: ")
+            if user_query.lower() == "exit":
+                print("Ending chat with OliviaAI.")
+                break
+
+            # Process the query through OliviaAI using NLP and other functionalities
+            response = self.olivia_ai.process_query(user_query)
+            
+            # Print OliviaAI's response
+            print(f"OliviaAI: {response}")
+
+
+# Initialize OliviaAIChatAppWithQuantumPortal and start chat
+if __name__ == "__main__":
+    oliviaai_app_with_quantum_portal = OliviaAIChatAppWithQuantumPortal()
+    oliviaai_app_with_quantum_portal.chat()  # Start chat mode
