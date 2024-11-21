@@ -1,0 +1,7 @@
+def predictive_analysis(trace_log):
+    """Predict potential anomalies."""
+    future_risks = []
+    for farqit_id, log in trace_log.items():
+        if sum(log["access_pattern"]) > 15:  # Example early warning threshold
+            future_risks.append(farqit_id)
+    return future_risks
