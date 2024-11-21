@@ -1,0 +1,12 @@
+def refined_suservation_monitor(farqits, suservation_rules):
+    flagged_farqits = []
+    for farqit_id, farqit in enumerate(farqits):
+        compliance_status = evaluate_compliance(farqit, suservation_rules)
+        if not compliance_status["is_compliant"]:
+            quarantine_farqit(farqit_id)
+            flagged_farqits.append({
+                "farqit_id": farqit_id,
+                "issue": compliance_status["issue"]
+            })
+            report_to_hub(farqit_id, compliance_status["issue"])
+    return flagged_farqits
