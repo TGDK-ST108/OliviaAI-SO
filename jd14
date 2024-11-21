@@ -1,0 +1,17 @@
+def dissolve_farqit(farqits, target_index):
+    if target_index < len(farqits):
+        dissolved = farqits.pop(target_index)  # Remove the target farqit
+        # Regenerate a new farqit with the same capacity
+        new_farqit = {"capacity": dissolved["capacity"], "used": 0, "data": None, "properties": []}
+        farqits.append(new_farqit)
+    return farqits
+
+def apply_time_dilation(farqits, time_factors):
+    for farqit, factor in zip(farqits, time_factors):
+        if factor > 1:  # High-priority farqit
+            farqit["processing_speed"] = "Fast"
+        elif factor < 1:  # Low-priority farqit
+            farqit["processing_speed"] = "Slow"
+        else:  # Normal priority
+            farqit["processing_speed"] = "Normal"
+    return farqits
