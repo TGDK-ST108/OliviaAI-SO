@@ -1,0 +1,7 @@
+def kerflump_memory(farqits):
+    """Randomly redistributes memory to simulate chaos."""
+    for farqit in farqits:
+        farqit["data"] = None  # Simulate data disruption
+        farqit["used"] = 0  # Reset usage
+    print("Kerflumping: Memory randomized!")
+    return farqits
