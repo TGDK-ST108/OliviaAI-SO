@@ -1,0 +1,5 @@
+def update_suservation_rules(current_rules, feedback):
+    """Update rules based on feedback."""
+    for rule, value in feedback.items():
+        current_rules[rule] += value  # Adjust rule parameters dynamically
+    return current_rules
