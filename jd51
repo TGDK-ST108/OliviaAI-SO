@@ -1,0 +1,6 @@
+def suservation_monitor(farqits):
+    for farqit in farqits:
+        if not meets_suservation_rules(farqit):
+            quarantine_farqit(farqit)
+            report_to_hub(farqit)
+    return farqits
