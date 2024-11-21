@@ -1,0 +1,6 @@
+def kerflump_access(farqits):
+    """Simulates high-access activity across all farqits."""
+    for farqit in farqits:
+        farqit["access_pattern"] = [random.randint(0, 20) for _ in range(5)]
+    print("Kerflumping: Access patterns flooded!")
+    return farqits
