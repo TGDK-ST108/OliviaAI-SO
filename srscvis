@@ -1,0 +1,12 @@
+def visualize_replicated_data(cylinder):
+    """Visualize replicated data from the cylinder."""
+    import matplotlib.pyplot as plt
+    
+    replicated = np.array(cylinder["replicated"])
+    plt.scatter(replicated[:, 0], replicated[:, 1], c="blue", label="Replicated Data")
+    plt.title("Subfusionary Cylinder Variable Replication")
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
