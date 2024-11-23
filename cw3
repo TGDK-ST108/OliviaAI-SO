@@ -1,0 +1,14 @@
+def initialize_serialized_zones():
+    """Create serialized zones with specified attributes."""
+    zones = [
+        {
+            "ID": i + 1,
+            "location": f"Zone {i + 1} Area",
+            "origin": "CentralStorage",
+            "name": f"Zone-{i + 1}",
+            "seed": {"dimension": dim, "function": f"Function-{i + 1}"},
+            "type": "Optimization" if i < 3 else "Archival" if i < 6 else "Cleansing"
+        }
+        for i, dim in enumerate([10, 12, 14] * 3)  # Repeating dimensions across 9 zones
+    ]
+    return zones
