@@ -1,0 +1,25 @@
+def route_data(data_item):
+    """Route data based on size."""
+    size = len(data_item)
+    if size <= 10**3:
+        return "Zone 1"
+    elif size <= 12**3:
+        return "Zone 2"
+    else:
+        return "Zone 3"
+
+def cleanse_data_in_transit(data_item):
+    """Perform cleansing operations during transit."""
+    # Example: Deduplicate or reformat data
+    cleaned_data = "".join(sorted(set(data_item)))
+    return cleaned_data
+
+def transit_storage(data_stream):
+    """Simulate seamless data transit through zones."""
+    zones = ["Zone 1", "Zone 2", "Zone 3"]
+    for zone in zones:
+        for i, data in enumerate(data_stream):
+            data_stream[i] = cleanse_data_in_transit(data)  # Cleanse during transit
+            print(f"Data item {i} processed in {zone}")
+    return data_stream
+
