@@ -1,0 +1,23 @@
+def initialize_segments():
+    return {
+        "Zone 1": {"size": 10**3, "data": []},
+        "Zone 2": {"size": 12**3, "data": []},
+        "Zone 3": {"size": 14**3, "data": []},
+    }
+
+def allocate_data(segments, data):
+    for item in data:
+        if len(item) <= 10**3:
+            segments["Zone 1"]["data"].append(item)
+        elif len(item) <= 12**3:
+            segments["Zone 2"]["data"].append(item)
+        else:
+            segments["Zone 3"]["data"].append(item)
+    return segments
+
+def chamber_wash(segments):
+    for zone, properties in segments.items():
+        # Example: Remove duplicate or outdated data
+        properties["data"] = list(set(properties["data"]))
+        print(f"{zone} cleaned with {len(properties['data'])} items remaining.")
+    return segments
