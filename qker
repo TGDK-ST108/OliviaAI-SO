@@ -1,0 +1,27 @@
+module kernel {
+    function init(): void {
+        // Initialize hardware and modules
+        duomotor_controller.initialize();
+        quintellion_fs.initialize();
+    }
+
+    function boot(): void {
+        init();
+        start_scheduler();
+    }
+}
+
+module quintellion_fs {
+    files: list<QuintellionFile>;
+
+    function initialize(): void {
+        this.files = [];
+    }
+
+    function add_file(file: QuintellionFile): void {
+        file.assign_zone(seed);
+        file.calculate_scatter_vector();
+        this.files.append(file);
+    }
+}
+
