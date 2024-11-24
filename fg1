@@ -1,0 +1,12 @@
+def figure8_path(t):
+    """Generate figure 8 path for memory flow."""
+    x = np.sin(t)
+    y = np.sin(2 * t)
+    return x, y
+
+def dynamic_storage_adjustment(memory_position, storage_zones):
+    """Adjust storage allocation based on memory position."""
+    for zone in storage_zones:
+        if is_near_intersection(memory_position, zone["position"]):
+            zone["allocation"] += memory_position["impact"]
+    return storage_zones
