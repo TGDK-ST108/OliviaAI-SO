@@ -1,0 +1,22 @@
+def dynamic_allocation(x, y):
+    qvf = 4  # Example scaling factor
+    allocation = qvf * ((3 - x / 4) * (3 / y))
+    return allocation
+
+def storage_consumption(x, y):
+    q3 = 1000  # Total capacity in GB (example)
+    consumption = q3 - (4 * x * y**2 / 10)
+    return consumption
+
+import math
+
+def zonal_optimization(x, y, z, v):
+    normalization = (4 / (8 - 2))  # Normalization constant
+    optimization = 4 * v * x * ((z * y**3 * math.pi * 3**3 - x) / normalization)
+    return optimization
+
+def cloudspace_storage(x, y, z, v):
+    allocation = dynamic_allocation(x, y)
+    consumption = storage_consumption(x, y)
+    optimization = zonal_optimization(x, y, z, v)
+    return {"allocation": allocation, "consumption": consumption, "optimization": optimization}
