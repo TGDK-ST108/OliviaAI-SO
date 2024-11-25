@@ -1,0 +1,93 @@
+import hashlib
+import os
+import shutil
+import logging
+import numpy as np
+import psutil
+
+# Set up logging
+logging.basicConfig(filename='/var/log/system_monitor.log', level=logging.INFO, format='%(asctime)s - %(message)s')
+
+# Quarantine directory
+QUARANTINE_DIR = "/quarantine"
+
+# Ensure quarantine directory exists
+if not os.path.exists(QUARANTINE_DIR):
+    os.makedirs(QUARANTINE_DIR)
+
+# Known malicious quantum-resistant hash signatures (example)
+MALICIOUS_HASHES = {
+    "b7a875fc1ea228b9061041b7cec4bd3c52abf5aa5f862ee59e41e47cd2d9247d",  # Example SHA-3 hash
+    "c5d8cb25f8460a62c75cfef2646a6d5dbf7b69b6df9859b46a174ff5db317e12"  # Another SHA-3 example
+}
+
+# Helper: Compute SHA-3 hash
+def compute_hash(file_path):
+    """Compute SHA-3-256 hash for a given file."""
+    sha3 = hashlib.sha3_256()
+    try:
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                sha3.update(chunk)
+    except IOError:
+        logging.error(f"Failed to access file {file_path}")
+        return None
+    return sha3.hexdigest()
+
+# Function to calculate figure 8 path and segment it
+def figure8_path(t, amplitude=1, base_height=0):
+    """Generate a folded figure 8 path in 3D for pyramid slopes."""
+    x = np.sin(t)
+    y = np.sin(2 * t)
+    z = amplitude * np.sin(t) + base_height  # Folding along the z-axis
+    return x, y, z
+
+# Function to segment the figure 8 path for verification
+def segment_path(t_values, segment_size=100):
+    """Segment the figure 8 path into smaller sections."""
+    return [figure8_path(t, amplitude=1, base_height=1) for t in np.array_split(t_values, segment_size)]
+
+# Analyze filesystem for malicious files
+def analyze_filesystem(root_dir="/"):
+    """Scan filesystem for malicious files using SHA-3-256."""
+    for root, dirs, files in os.walk(root_dir):
+        for file in files:
+            file_path = os.path.join(root, file)
+            file_hash = compute_hash(file_path)
+            
+            if file_hash and file_hash in MALICIOUS_HASHES:
+                logging.warning(f"Malicious file detected: {file_path}. Moving to quarantine.")
+                quarantine_file(file_path)
+
+# Quarantine a file
+def quarantine_file(file_path):
+    """Move malicious files to quarantine."""
+    try:
+        shutil.move(file_path, QUARANTINE_DIR)
+        logging.info(f"Quarantined file: {file_path}")
+    except Exception as e:
+        logging.error(f"Failed to quarantine file {file_path}: {e}")
+
+# Function to process the memory flow and apply hashing verification at each segment
+def process_memory_flow_and_verify(t_values, segment_size=100):
+    """Process memory flow along the figure 8 and verify file integrity at each segment."""
+    segments = segment_path(t_values, segment_size)
+    for idx, segment in enumerate(segments):
+        logging.info(f"Processing Segment {idx+1}: Verifying files in this segment...")
+        # Perform file system analysis and verification
+        analyze_filesystem("/")  # Scan the filesystem
+
+# Main function to run system monitoring
+def main():
+    """Run system monitor."""
+    logging.info("System monitor started.")
+    
+    # Simulating the figure 8 path and process memory
+    t_values = np.linspace(0, 2 * np.pi, 500)  # Time values for the figure 8 path
+    process_memory_flow_and_verify(t_values)
+    
+    logging.info("System monitor completed.")
+
+# Run on startup
+if __name__ == "__main__":
+    main()
