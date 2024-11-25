@@ -1,0 +1,24 @@
+# Function to calculate figure 8 path and segment it into smaller sections
+def segment_path_smaller(t_values, segment_size=50):
+    """Segment the figure 8 path into smaller sections for simplified processing."""
+    segments = [figure8_path(t, amplitude=1, base_height=1) for t in np.array_split(t_values, segment_size)]
+    return segments
+
+# Simplified process memory flow with smaller segments
+def process_memory_flow_smaller_segments(t_values, segment_size=50):
+    """Process memory flow along the figure 8 with smaller segments for verification."""
+    segments = segment_path_smaller(t_values, segment_size)
+    for idx, segment in enumerate(segments):
+        logging.info(f"Processing Smaller Segment {idx + 1}: Verifying localized files...")
+        # Perform file system analysis and verification
+        analyze_filesystem("/")  # Focused scan for the current segment
+
+def main():
+    """Run system monitor with smaller segments for the figure 8 flow."""
+    logging.info("System monitor with smaller segmentation started.")
+    
+    # Simulating the figure 8 path with smaller segmentations
+    t_values = np.linspace(0, 2 * np.pi, 500)  # Time values for the figure 8 path
+    process_memory_flow_smaller_segments(t_values, segment_size=50)  # Smaller segments
+    
+    logging.info("System monitor with smaller segmentation completed.")
