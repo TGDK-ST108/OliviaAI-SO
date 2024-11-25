@@ -1,0 +1,78 @@
+import os
+import psutil
+import shutil
+import hashlib
+import logging
+
+# Set up logging
+logging.basicConfig(filename='/var/log/system_monitor.log', level=logging.INFO, format='%(asctime)s - %(message)s')
+
+# Quarantine directory
+QUARANTINE_DIR = "/quarantine"
+
+# Ensure quarantine directory exists
+if not os.path.exists(QUARANTINE_DIR):
+    os.makedirs(QUARANTINE_DIR)
+
+# Known malicious hash signatures (example)
+MALICIOUS_HASHES = {
+    "e99a18c428cb38d5f260853678922e03",  # Example MD5 hash
+    "098f6bcd4621d373cade4e832627b4f6"
+}
+
+# Helper: Compute file hash
+def compute_hash(file_path):
+    hash_md5 = hashlib.md5()
+    try:
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+    except IOError:
+        logging.error(f"Failed to access file {file_path}")
+        return None
+    return hash_md5.hexdigest()
+
+# Analyze running processes
+def analyze_processes():
+    for proc in psutil.process_iter(['pid', 'name', 'exe']):
+        try:
+            proc_info = proc.info
+            proc_name = proc_info['name']
+            proc_exe = proc_info['exe']
+            
+            # Example: Flag processes with "suspicious" in name
+            if "suspicious" in proc_name.lower():
+                logging.warning(f"Flagged suspicious process: {proc_name} (PID: {proc_info['pid']})")
+                proc.terminate()
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+
+# Analyze filesystem for malicious files
+def analyze_filesystem(root_dir="/"):
+    for root, dirs, files in os.walk(root_dir):
+        for file in files:
+            file_path = os.path.join(root, file)
+            file_hash = compute_hash(file_path)
+            
+            if file_hash and file_hash in MALICIOUS_HASHES:
+                logging.warning(f"Malicious file detected: {file_path}. Moving to quarantine.")
+                quarantine_file(file_path)
+
+# Quarantine a file
+def quarantine_file(file_path):
+    try:
+        shutil.move(file_path, QUARANTINE_DIR)
+        logging.info(f"Quarantined file: {file_path}")
+    except Exception as e:
+        logging.error(f"Failed to quarantine file {file_path}: {e}")
+
+# Main function
+def main():
+    logging.info("System monitor started.")
+    analyze_processes()
+    analyze_filesystem()
+    logging.info("System monitor completed.")
+
+# Run on startup
+if __name__ == "__main__":
+    main()
