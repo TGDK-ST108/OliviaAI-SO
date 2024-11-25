@@ -1,0 +1,83 @@
+import hashlib
+import os
+import shutil
+import psutil
+import logging
+
+# Set up logging
+logging.basicConfig(filename='/var/log/system_monitor.log', level=logging.INFO, format='%(asctime)s - %(message)s')
+
+# Quarantine directory
+QUARANTINE_DIR = "/quarantine"
+
+# Ensure quarantine directory exists
+if not os.path.exists(QUARANTINE_DIR):
+    os.makedirs(QUARANTINE_DIR)
+
+# Known malicious quantum-resistant hash signatures (example)
+MALICIOUS_HASHES = {
+    "b7a875fc1ea228b9061041b7cec4bd3c52abf5aa5f862ee59e41e47cd2d9247d",  # Example SHA-3 hash
+    "c5d8cb25f8460a62c75cfef2646a6d5dbf7b69b6df9859b46a174ff5db317e12"  # Another SHA-3 example
+}
+
+# Helper: Compute SHA-3 hash
+def compute_hash(file_path):
+    """Compute SHA-3-256 hash for a given file."""
+    sha3 = hashlib.sha3_256()
+    try:
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                sha3.update(chunk)
+    except IOError:
+        logging.error(f"Failed to access file {file_path}")
+        return None
+    return sha3.hexdigest()
+
+# Analyze running processes
+def analyze_processes():
+    """Scan and terminate suspicious processes."""
+    for proc in psutil.process_iter(['pid', 'name', 'exe']):
+        try:
+            proc_info = proc.info
+            proc_name = proc_info['name']
+            proc_exe = proc_info['exe']
+            
+            # Example: Flag processes with "suspicious" in name
+            if "suspicious" in proc_name.lower():
+                logging.warning(f"Flagged suspicious process: {proc_name} (PID: {proc_info['pid']})")
+                proc.terminate()
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+
+# Analyze filesystem for malicious files
+def analyze_filesystem(root_dir="/"):
+    """Scan filesystem for malicious files using SHA-3-256."""
+    for root, dirs, files in os.walk(root_dir):
+        for file in files:
+            file_path = os.path.join(root, file)
+            file_hash = compute_hash(file_path)
+            
+            if file_hash and file_hash in MALICIOUS_HASHES:
+                logging.warning(f"Malicious file detected: {file_path}. Moving to quarantine.")
+                quarantine_file(file_path)
+
+# Quarantine a file
+def quarantine_file(file_path):
+    """Move malicious files to quarantine."""
+    try:
+        shutil.move(file_path, QUARANTINE_DIR)
+        logging.info(f"Quarantined file: {file_path}")
+    except Exception as e:
+        logging.error(f"Failed to quarantine file {file_path}: {e}")
+
+# Main function
+def main():
+    """Run system monitor."""
+    logging.info("System monitor started.")
+    analyze_processes()
+    analyze_filesystem()
+    logging.info("System monitor completed.")
+
+# Run on startup
+if __name__ == "__main__":
+    main()
