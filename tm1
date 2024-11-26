@@ -1,0 +1,45 @@
+class ThreadMultiplier:
+    def __init__(self, vector_3_threads, vector_score, underfold_volumation, residual_off_flow, duomotor_influence):
+        """
+        Initialize the thread multiplier with required metrics.
+        """
+        self.vector_3_threads = vector_3_threads
+        self.vector_score = vector_score
+        self.underfold_volumation = underfold_volumation
+        self.residual_off_flow = residual_off_flow
+        self.duomotor_influence = duomotor_influence
+
+    def calculate_adjusted_threads(self):
+        """
+        Calculate the adjusted thread allocation based on the formula.
+        """
+        try:
+            # Avoid division by zero
+            denominator = self.underfold_volumation + self.residual_off_flow + self.duomotor_influence
+            if denominator == 0:
+                raise ValueError("Denominator in thread calculation cannot be zero.")
+
+            adjusted_threads = self.vector_3_threads * (144 * (self.vector_score / denominator))
+            return adjusted_threads
+
+        except Exception as e:
+            print(f"Error in thread calculation: {e}")
+            return None
+
+
+# Example Metrics
+vector_3_threads = 133
+vector_score = 80.5  # Example vector score
+underfold_volumation = 20.7  # Example metric from Vector 0
+residual_off_flow = 45.3  # Aggregated from other vectors
+duomotor_influence = 12.6  # Example duomotor contribution
+
+# Initialize and calculate adjusted threads
+thread_multiplier = ThreadMultiplier(
+    vector_3_threads, vector_score, underfold_volumation, residual_off_flow, duomotor_influence
+)
+
+adjusted_threads = thread_multiplier.calculate_adjusted_threads()
+
+# Display results
+print(f"Adjusted Thread Allocation: {adjusted_threads:.2f}")
