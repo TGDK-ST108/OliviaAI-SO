@@ -1,0 +1,5 @@
+# Initialize ZenGarden with Dask
+zengarden_dask = ZenGardenDask(frequency=1.5)
+
+# Process data at a gate
+processed_data = zengarden_dask.process_gate(size=10000)  # Simulate processing a large vector field
