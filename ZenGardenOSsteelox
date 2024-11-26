@@ -1,0 +1,51 @@
+class ZenGardenOSWithSteelox(ZenGardenOSWithSecurity):
+    def __init__(self, primary_node_metrics, steelox_instance):
+        """
+        Extend ZenGarden OS to include Steelox for Vector 2 security monitoring.
+        """
+        super().__init__(primary_node_metrics)
+        self.steelox = steelox_instance
+
+    def monitor_and_validate_with_steelox(self, processes):
+        """
+        Use Vector 2 to monitor and validate processes with Steelox.
+        """
+        print("Monitoring and Validating Processes with Steelox (Vector 2)...")
+        validated_processes = []
+
+        for process in processes:
+            threat_score = self.steelox.analyze_process(process)
+            print(f"Process: {process}, Threat Score: {threat_score}")
+
+            # Define a threshold for validation (e.g., threat score < 50 is valid)
+            if threat_score < 50:
+                validated_processes.append(process)
+
+        print(f"Validated Processes: {validated_processes}")
+        return validated_processes
+
+
+# Mock Steelox instance for testing
+class SteeloxMock:
+    def analyze_process(self, process):
+        """
+        Mock Steelox threat analysis.
+        Assigns a random threat score to simulate behavior.
+        """
+        import random
+        return random.randint(1, 100)  # Threat score between 1 and 100
+
+
+# Initialize Steelox and integrate with ZenGarden OS
+steelox_instance = SteeloxMock()
+zengarden_os_steelox = ZenGardenOSWithSteelox(primary_node_metrics, steelox_instance)
+
+# Example processes for testing
+example_processes = ["safe_process", "suspicious_process", "critical_system_process"]
+
+# Use Vector 2 with Steelox for security monitoring
+validated_processes_with_steelox = zengarden_os_steelox.monitor_and_validate_with_steelox(example_processes)
+
+# Display validated processes
+print("\nValidated Processes with Steelox:")
+print(validated_processes_with_steelox)
