@@ -1,0 +1,11 @@
+# Initialize ZenGarden with Dask
+zengarden = ZenGarden(frequency=1.5, use_dask=True)
+
+# Process a large dataset with Dask
+processed_data = zengarden.process_gate(size=10000)
+
+# Initialize ZenGarden without Dask
+zengarden_sequential = ZenGarden(frequency=1.5, use_dask=False)
+
+# Process a small dataset with NumPy
+processed_data_sequential = zengarden_sequential.process_gate(size=500)
