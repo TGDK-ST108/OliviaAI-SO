@@ -1,0 +1,87 @@
+import math
+
+class FilesystemPyramidKernelWithTheory(FilesystemPyramidKernelFinal):
+    def calculate_node_metrics(self, data):
+        """
+        Calculate theoretical metrics for a given data point.
+        """
+        metrics = []
+        for snippet in data:
+            try:
+                # Simulate Schrodinger's equation (e.g., wave-like behavior)
+                schrodinger = math.sin(len(snippet)) ** 2
+
+                # Entanglement (relationship between characters)
+                entanglement = sum(ord(c) for c in snippet) / len(snippet)
+
+                # Entropy (measure of randomness)
+                entropy = -sum((p := len(snippet) / 100) * math.log(p) for _ in range(len(snippet)))
+
+                # Dexterization (optimization)
+                dexterization = sum(ord(c) % 3 for c in snippet)
+
+                # Kerflumping (dynamic factor)
+                kerflumping = math.sqrt(len(snippet)) * random.random()
+
+                # Reward (aggregate score)
+                reward = schrodinger + entanglement - entropy + dexterization + kerflumping
+
+                metrics.append([schrodinger, entanglement, entropy, dexterization, kerflumping, reward])
+            except Exception as e:
+                print(f"Error processing snippet '{snippet}': {e}")
+                metrics.append([0, 0, 0, 0, 0, 0])
+        return metrics
+
+    def process_pyramid(self, labels):
+        """
+        Process the pyramid level by level, calculating metrics and training models.
+        """
+        results = {}
+        for level, files in sorted(self.pyramid.items()):
+            if not files:
+                print(f"Skipping Level {level} as it contains no files.")
+                continue
+
+            print(f"Processing Level {level} with {len(files)} files.")
+
+            # Read data from files
+            data = [open(f).read() if os.path.exists(f) else "placeholder" for f in files]
+
+            if len(data) < 2:
+                print(f"Skipping Level {level} due to insufficient data for training.")
+                continue
+
+            # Calculate theoretical metrics
+            node_metrics = self.calculate_node_metrics(data)
+
+            # Quantum Features
+            quantum_features = self.quantum_feature_extraction(data)
+
+            # Text Embeddings
+            text_embeddings = self.text_embedding_extraction(data)
+
+            # Combine Features
+            combined_features = self.combine_features(quantum_features, text_embeddings)
+
+            # Train Model
+            model, accuracy = self.train_model(combined_features, labels[:len(data)])
+            results[level] = {
+                "accuracy": accuracy,
+                "model": model,
+                "node_metrics": node_metrics
+            }
+
+        return results
+
+# Re-run the kernel with updated logic
+kernel_theory = FilesystemPyramidKernelWithTheory(demo_root)
+
+# Process the Pyramid
+pyramid_results_theory = kernel_theory.process_pyramid(demo_labels)
+
+# Visualize Results
+visualize_pyramid_results(pyramid_results_theory)
+
+# Example: Accessing node metrics for a specific level
+print("Node Metrics for Level 1:")
+print(pyramid_results_theory[1]["node_metrics"])
