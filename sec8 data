@@ -1,0 +1,24 @@
+# Example processes and actions for Vector 8
+vector_8_processes = [
+    "background_safe_process",
+    "rare_anomalous_process",
+    "secure_critical_process"
+]
+vector_8_actions = [
+    "allow_secure_transfer",
+    "allow_read",
+    "block_insecure_upload",
+    "allow_secure_execution"
+]
+
+# Simulate with extended Steelox for Vector 8
+vector_8_results = zengarden_os_thread_allocation.simulate_with_extended_steelox(
+    data=zone_5_data,  # Reuse zone data for demonstration
+    processes=vector_8_processes,
+    actions=vector_8_actions
+)
+
+# Display Vector 8 results
+print("\nVector 8 Simulation Results with Extended Steelox:")
+for key, value in vector_8_results.items():
+    print(f"{key.capitalize()}: {value}")
