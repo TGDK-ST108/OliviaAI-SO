@@ -1,0 +1,47 @@
+def visualize_vector_wave_with_primary_node(pyramid_results):
+    """
+    Visualize nodes floating across a vector wave chart.
+    Node 3 is highlighted as the primary system node.
+    """
+    levels = list(pyramid_results.keys())
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    for level in levels:
+        node_rewards = [metric[5] for metric in pyramid_results[level]["node_metrics"]]
+        num_nodes = len(node_rewards)
+
+        # Generate positions for nodes along the x-axis
+        x = np.linspace(0, 2 * np.pi, num_nodes)
+        y = np.sin(x) * 50  # Vector wave function (sine wave)
+        rewards = node_rewards  # Use rewards to adjust marker size/color
+
+        # Plot nodes floating on the vector wave
+        scatter = ax.scatter(
+            x, y, c=rewards, cmap='viridis', s=[r * 2 for r in rewards], edgecolors='k', label=f"Level {level}"
+        )
+
+        # Highlight Node 3 (primary system node)
+        if num_nodes > 3:
+            ax.scatter(x[3], y[3], c='red', s=300, edgecolors='k', label="Primary Node (3)")
+            ax.text(
+                x[3], y[3] + 5, "Primary Node 3", color="red", fontsize=10, ha="center"
+            )
+
+        for i, reward in enumerate(rewards):
+            ax.text(x[i], y[i] + 2, f"{reward:.1f}", fontsize=8, ha="center")
+
+    # Add color bar for rewards
+    cbar = plt.colorbar(scatter, ax=ax, pad=0.1, shrink=0.7)
+    cbar.set_label("Reward", rotation=270, labelpad=15)
+
+    # Set plot labels and title
+    ax.set_title("Vector Wave Chart with Floating Nodes", fontsize=14)
+    ax.set_xlabel("X-axis (Vector Wave)")
+    ax.set_ylabel("Y-axis (Floating Height)")
+
+    plt.legend()
+    plt.show()
+
+
+# Visualize nodes floating across the vector wave chart
+visualize_vector_wave_with_primary_node(pyramid_results_theory_corrected)
