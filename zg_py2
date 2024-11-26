@@ -1,0 +1,25 @@
+class ZenGardenPyramidFixed:
+    def __init__(self, levels, frequency=1.0):
+        """
+        Initialize ZenGarden for a pyramid structure with multiple levels.
+        """
+        self.levels = levels
+        self.zengardens = [ZenGardenFixedVisualization(frequency=frequency) for _ in range(levels)]
+        logging.info(f"ZenGarden Pyramid initialized with {levels} levels.")
+
+    def process_pyramid(self, sizes):
+        """
+        Process each level of the pyramid with ZenGarden.
+        """
+        results = []
+        for level, (zengarden, size) in enumerate(zip(self.zengardens, sizes), start=1):
+            logging.info(f"Processing Level {level} with size {size}.")
+            processed_data = zengarden.process_gate(size)
+            results.append(
+                {
+                    "Level": level,
+                    "Size": size,
+                    "Processed Vectors": processed_data[:5],  # Display first 5 processed vectors
+                }
+            )
+        return results
