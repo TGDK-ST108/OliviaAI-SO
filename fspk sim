@@ -1,0 +1,11 @@
+# Labels for training (adjust length as needed)
+labels = [1, 0, 1, 0, 1] * 5
+
+# Initialize the Pyramid Kernel
+kernel = FilesystemPyramidKernel(sample_root)
+
+# Process the Pyramid
+pyramid_results = kernel.process_pyramid(labels)
+
+# Visualize Results
+visualize_pyramid_results(pyramid_results)
