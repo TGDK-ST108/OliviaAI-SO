@@ -1,0 +1,19 @@
+# Create a sample filesystem
+sample_root = "./sample_filesystem"
+os.makedirs(sample_root, exist_ok=True)
+
+# Generate sample data for each level
+sample_data = {
+    0: ["root_file_1", "root_file_2"],
+    1: ["subdir1_file_1", "subdir1_file_2"],
+    2: ["subdir2_file_1", "subdir2_file_2"],
+}
+
+# Populate the sample filesystem
+for level, files in sample_data.items():
+    level_dir = os.path.join(sample_root, f"level_{level}")
+    os.makedirs(level_dir, exist_ok=True)
+    for filename in files:
+        file_path = os.path.join(level_dir, filename)
+        with open(file_path, "w") as f:
+            f.write(f"This is content for {filename} at level {level}.")
