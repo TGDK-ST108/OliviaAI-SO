@@ -1,0 +1,42 @@
+import threading
+import time
+from queue import Queue
+
+class LearningHighway:
+    def __init__(self, pyramid_results):
+        self.pyramid_results = pyramid_results
+        self.thread_pool = []
+        self.results_queue = Queue()
+
+    def process_node(self, level, node_id, reward):
+        """
+        Simulates processing a node with its assigned threads.
+        """
+        threads = int(reward)  # Assign threads based on reward
+        print(f"Level {level}, Node {node_id}: Processing with {threads} threads.")
+        time.sleep(threads * 0.01)  # Simulate processing time
+        self.results_queue.put((level, node_id, f"Processed with {threads} threads."))
+
+    def start_highway(self):
+        """
+        Start the learning highway by wrapping threads around pyramid nodes.
+        """
+        for level, result in self.pyramid_results.items():
+            node_rewards = [metric[5] for metric in result["node_metrics"]]
+            for node_id, reward in enumerate(node_rewards):
+                thread = threading.Thread(target=self.process_node, args=(level, node_id, reward))
+                self.thread_pool.append(thread)
+                thread.start()
+
+        # Wait for all threads to complete
+        for thread in self.thread_pool:
+            thread.join()
+
+        # Collect results
+        while not self.results_queue.empty():
+            print(self.results_queue.get())
+
+
+# Initialize and run the learning highway
+learning_highway = LearningHighway(pyramid_results_theory_corrected)
+learning_highway.start_highway()
