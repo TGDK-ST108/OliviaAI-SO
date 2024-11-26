@@ -1,0 +1,115 @@
+import os
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import matplotlib.pyplot as plt
+
+class FilesystemPyramidKernel:
+    def __init__(self, root_directory):
+        """
+        Initialize the filesystem pyramid kernel with a root directory.
+        """
+        self.root_directory = root_directory
+        self.pyramid = self.build_pyramid(root_directory)
+
+    def build_pyramid(self, root_directory):
+        """
+        Build a pyramid structure from the filesystem.
+        Each level contains files or directories within a specific depth.
+        """
+        pyramid = {}
+        for dirpath, _, filenames in os.walk(root_directory):
+            depth = dirpath.count(os.sep) - root_directory.count(os.sep)
+            if depth not in pyramid:
+                pyramid[depth] = []
+            pyramid[depth].extend([os.path.join(dirpath, f) for f in filenames])
+        return pyramid
+
+    def quantum_feature_extraction(self, data):
+        """
+        Simulate quantum feature extraction for files or data.
+        Ensure the output has consistent dimensions.
+        """
+        features = []
+        for snippet in data:
+            try:
+                feature = [len(snippet), sum(ord(c) for c in snippet)]
+                optimized = [x / max(feature) for x in feature]  # Normalize as a simulation
+                features.append(optimized)
+            except Exception:
+                features.append([0, 0])  # Default feature
+        return np.array(features)  # Return as 2D array
+
+    def text_embedding_extraction(self, data):
+        """
+        Simulate text embeddings for the data.
+        """
+        return np.random.rand(len(data), 5)
+
+    def combine_features(self, quantum_features, text_embeddings):
+        """
+        Combine quantum features and text embeddings into a single feature matrix.
+        Ensure consistent dimensions by reshaping quantum features if needed.
+        """
+        if quantum_features.ndim == 1:
+            quantum_features = quantum_features.reshape(-1, 1)  # Convert to 2D
+        return np.hstack([quantum_features, text_embeddings])
+
+    def train_model(self, X, y):
+        """
+        Train a Random Forest Classifier on the provided features and labels.
+        """
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        model = RandomForestClassifier(n_estimators=100)
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
+        accuracy = accuracy_score(y_test, y_pred)
+        return model, accuracy
+
+    def process_pyramid(self, labels):
+        """
+        Process the pyramid level by level, extracting features and training models.
+        Skip levels with no files.
+        """
+        results = {}
+        for level, files in sorted(self.pyramid.items()):
+            if not files:
+                print(f"Skipping Level {level} as it contains no files.")
+                continue
+
+            print(f"Processing Level {level} with {len(files)} files.")
+
+            # Read data from files (simulate reading for now)
+            data = [open(f).read() if os.path.exists(f) else "placeholder" for f in files]
+
+            # Quantum Features
+            quantum_features = self.quantum_feature_extraction(data)
+
+            # Text Embeddings
+            text_embeddings = self.text_embedding_extraction(data)
+
+            # Combine Features
+            combined_features = self.combine_features(quantum_features, text_embeddings)
+
+            # Train Model
+            model, accuracy = self.train_model(combined_features, labels[:len(data)])
+            results[level] = {"accuracy": accuracy, "model": model}
+
+        return results
+
+# Visualization Function
+def visualize_pyramid_results(pyramid_results):
+    """
+    Visualize the accuracy of models trained at each level of the pyramid.
+    """
+    levels = list(pyramid_results.keys())
+    accuracies = [pyramid_results[level]["accuracy"] for level in levels]
+
+    plt.figure(figsize=(8, 5))
+    plt.bar(levels, accuracies, color='blue', alpha=0.7)
+    plt.xlabel("Pyramid Level")
+    plt.ylabel("Model Accuracy")
+    plt.title("Model Accuracy Across Pyramid Levels")
+    plt.grid(True)
+    plt.show()
