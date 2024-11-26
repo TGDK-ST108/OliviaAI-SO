@@ -1,0 +1,14 @@
+# Initialize and test the ZenGarden Pyramid
+pyramid = ZenGardenPyramidFixed(levels=3, frequency=1.5)
+
+# Dataset sizes for each pyramid level
+dataset_sizes = [500, 2000, 10000]  # Small, medium, and large datasets
+
+# Process each level of the pyramid
+results = pyramid.process_pyramid(dataset_sizes)
+
+# Display results
+for result in results:
+    print(f"Level {result['Level']} - Processed {result['Size']} vectors:")
+    for idx, vector in enumerate(result['Processed Vectors'], 1):
+        print(f"  Vector {idx}: {vector}")
