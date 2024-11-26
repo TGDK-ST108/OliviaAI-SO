@@ -1,0 +1,31 @@
+# Create sample filesystem
+sample_root = "./demo_filesystem"
+os.makedirs(sample_root, exist_ok=True)
+
+# Populate the sample filesystem
+sample_data = {
+    0: ["root_file_1", "root_file_2"],
+    1: ["subdir1_file_1", "subdir1_file_2", "subdir1_file_3"],
+    2: ["subdir2_file_1", "subdir2_file_2"],
+}
+
+# Generate files for each level
+for level, files in sample_data.items():
+    level_dir = os.path.join(sample_root, f"level_{level}")
+    os.makedirs(level_dir, exist_ok=True)
+    for filename in files:
+        file_path = os.path.join(level_dir, filename)
+        with open(file_path, "w") as f:
+            f.write(f"Sample content for {filename} at level {level}.")
+
+# Labels for training
+labels = [1, 0, 1, 0, 1, 0, 1, 1, 0]  # Adjust length to match total files
+
+# Initialize the Filesystem Pyramid Kernel
+kernel = FilesystemPyramidKernel(sample_root)
+
+# Process the Pyramid
+pyramid_results = kernel.process_pyramid(labels)
+
+# Visualize the Results
+visualize_pyramid_results(pyramid_results)
