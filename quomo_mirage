@@ -1,0 +1,90 @@
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.patches import Arc
+from matplotlib.animation import FuncAnimation
+
+# Class for Quomo-Mirage
+class QuomoMirage:
+    def __init__(self, vectors, scope_radius=1.0):
+        """
+        Initialize the Quomo-Mirage with vectors and scope settings.
+        """
+        self.vectors = vectors  # Dictionary of vectors with their positions
+        self.scope_angle = 0  # Initial angle of the rotating scope
+        self.scope_radius = scope_radius
+        self.selected_vector = None
+
+    def rotate_scope(self, angle_step):
+        """
+        Rotate the scope by a given angle step.
+        """
+        self.scope_angle = (self.scope_angle + angle_step) % 360
+
+    def select_vector(self):
+        """
+        Select the vector closest to the current scope angle.
+        """
+        angles = {name: self.calculate_vector_angle(pos[-1]) for name, pos in self.vectors.items()}
+        closest_vector = min(angles, key=lambda v: abs(angles[v] - self.scope_angle))
+        self.selected_vector = closest_vector
+
+    def calculate_vector_angle(self, position):
+        """
+        Calculate the angle of a vector position relative to the origin.
+        """
+        x, y, _ = position
+        return np.degrees(np.arctan2(y, x)) % 360
+
+    def visualize(self, frame):
+        """
+        Visualization function for animation.
+        """
+        plt.clf()
+        fig, ax = plt.subplots(figsize=(8, 8))
+        ax.set_xlim(-2, 2)
+        ax.set_ylim(-2, 2)
+        ax.set_aspect('equal')
+
+        # Draw the dial
+        ax.add_artist(plt.Circle((0, 0), self.scope_radius, fill=False, linestyle='--'))
+
+        # Draw the rotating scope
+        arc = Arc((0, 0), self.scope_radius * 2, self.scope_radius * 2,
+                  theta1=self.scope_angle - 10, theta2=self.scope_angle + 10, color="blue")
+        ax.add_patch(arc)
+
+        # Plot the vectors
+        for name, pos in self.vectors.items():
+            x, y, z = pos[-1]
+            ax.plot(x, y, 'o', label=name)
+            if name == self.selected_vector:
+                ax.text(x, y, name, color="red", fontsize=12)
+            else:
+                ax.text(x, y, name, fontsize=9)
+
+        plt.title(f"Quomo-Mirage: Scope at {self.scope_angle:.2f}°")
+        plt.legend()
+        plt.draw()
+
+# Initialize vectors with their positions
+vectors = {
+    "Gentuo": [[1.0, 0.0, 0.0]],  # Use the last position for display
+    "Valhalla": [[0.0, 1.0, 0.0]],
+    "Warden": [[0.5, 0.5, 0.0]],
+}
+
+# Initialize Quomo-Mirage
+mirage = QuomoMirage(vectors)
+
+# Simulate the rotating scope
+def update(frame):
+    mirage.rotate_scope(10)  # Rotate 10 degrees per frame
+    mirage.select_vector()  # Select the closest vector
+    mirage.visualize(frame)
+
+# Create animation
+fig, ax = plt.subplots()
+ani = FuncAnimation(fig, update, frames=36, repeat=False, interval=200)
+
+# Display the animation
+plt.show()
