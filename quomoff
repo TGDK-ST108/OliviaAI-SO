@@ -1,0 +1,73 @@
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.patches import Circle
+
+class FlowForceSystem:
+    def __init__(self):
+        """
+        Initialize the 9-node Flow Force System.
+        """
+        self.nodes = {
+            1: "Quill",
+            2: "Rake",
+            3: "Teacup",
+            4: "Holoform",
+            5: "Flow Force",
+            6: "Drum",
+            7: "Gear",
+            8: "Patch",
+            9: "Cog"
+        }
+        self.connections = {}  # Track dynamic connections
+
+    def connect_nodes(self, source, target):
+        """
+        Establish a connection between two nodes.
+        """
+        if source not in self.connections:
+            self.connections[source] = []
+        self.connections[source].append(target)
+        print(f"Connected Node {source} ({self.nodes[source]}) to Node {target} ({self.nodes[target]}).")
+
+    def visualize(self):
+        """
+        Visualize the Flow Force System as a radial diagram.
+        """
+        fig, ax = plt.subplots(figsize=(8, 8))
+        ax.set_xlim(-1.5, 1.5)
+        ax.set_ylim(-1.5, 1.5)
+        ax.set_aspect('equal')
+
+        # Define node positions (radial layout)
+        angles = np.linspace(0, 2 * np.pi, len(self.nodes) + 1)
+        node_positions = {i: (np.cos(angle), np.sin(angle)) for i, angle in zip(self.nodes.keys(), angles)}
+
+        # Plot nodes
+        for node, pos in node_positions.items():
+            x, y = pos
+            ax.add_patch(Circle((x, y), 0.1, color="blue" if node == 5 else "green"))
+            ax.text(x, y, f"{self.nodes[node]}\n{node}", color="white", ha="center", va="center")
+
+        # Plot connections
+        for source, targets in self.connections.items():
+            source_x, source_y = node_positions[source]
+            for target in targets:
+                target_x, target_y = node_positions[target]
+                ax.plot([source_x, target_x], [source_y, target_y], linestyle="--", color="orange")
+
+        plt.title("Flow Force System Visualization")
+        plt.show()
+
+
+# Initialize the system
+flow_force = FlowForceSystem()
+
+# Establish connections
+flow_force.connect_nodes(4, 5)  # Holoform to Flow Force
+flow_force.connect_nodes(5, 6)  # Flow Force to Drum
+flow_force.connect_nodes(5, 7)  # Flow Force to Gear
+flow_force.connect_nodes(5, 8)  # Flow Force to Patch
+flow_force.connect_nodes(5, 9)  # Flow Force to Cog
+
+# Visualize the Flow Force system
+flow_force.visualize()
