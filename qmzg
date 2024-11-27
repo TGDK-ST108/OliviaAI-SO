@@ -1,0 +1,53 @@
+class ZenGardenSystem:
+    def __init__(self):
+        self.central_hub = "Quomo-Mirage"
+        self.nodes = {
+            "t": "Teacup Mode - Tranquility and Data Collection",
+            "h": "ZenGardenHoloform - Holographic Display",
+            "g": "Quill Mode - Writing and Creative Output",
+            "r": "Rake Mode - Alignment and Cleanup",
+        }
+        self.active_mode = None
+
+    def activate_mode(self, mode):
+        """
+        Activate a specific mode and establish connection with the central hub.
+        """
+        if mode in self.nodes:
+            self.active_mode = mode
+            print(f"Activating {self.nodes[mode]}...")
+        else:
+            print(f"Mode '{mode}' is not recognized.")
+
+    def synchronize(self):
+        """
+        Synchronize all nodes with the central hub.
+        """
+        print("Synchronizing nodes with Quomo-Mirage...")
+        for node, description in self.nodes.items():
+            print(f"Node '{node}': {description} synchronized.")
+
+    def display_status(self):
+        """
+        Display the current status of the system.
+        """
+        print(f"Central Hub: {self.central_hub}")
+        print(f"Active Mode: {self.active_mode if self.active_mode else 'None'}")
+        print("Connected Nodes:")
+        for node, description in self.nodes.items():
+            print(f"  {node}: {description}")
+
+# Initialize the system
+zen_garden = ZenGardenSystem()
+
+# Display initial status
+zen_garden.display_status()
+
+# Activate a mode
+zen_garden.activate_mode("h")  # Activate holographic display mode
+
+# Synchronize all nodes
+zen_garden.synchronize()
+
+# Display updated status
+zen_garden.display_status()
