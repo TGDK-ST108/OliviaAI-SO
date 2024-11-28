@@ -1,0 +1,40 @@
+import matplotlib.pyplot as plt
+import networkx as nx
+
+def visualize_iot_synthesizer(devices, data_catalogue):
+    """
+    Visualize IoT device connections and data sharing in the synthesizer.
+    """
+    graph = nx.DiGraph()
+
+    # Add nodes and edges
+    graph.add_node("TGDK Synthesizer", color="red", size=800)
+    for device in devices:
+        graph.add_node(device["device"], color="blue" if device["compatibility"] == "Compatible" else "green", size=500)
+        graph.add_edge(device["device"], "TGDK Synthesizer")
+
+    # Draw the graph
+    pos = nx.spring_layout(graph)
+    colors = nx.get_node_attributes(graph, "color").values()
+    sizes = [graph.nodes[node].get("size", 300) for node in graph.nodes]
+    nx.draw(graph, pos, with_labels=True, node_color=colors, node_size=sizes)
+
+    # Annotate data catalogue
+    for device, data in data_catalogue.items():
+        plt.text(pos[device][0], pos[device][1] - 0.1, str(data), fontsize=8)
+
+    plt.title("IoT Device Connections and Data Sharing")
+    plt.show()
+
+# Example data for visualization
+devices = [
+    {"device": "SmartSensor 1", "compatibility": "Compatible"},
+    {"device": "LegacyCamera", "compatibility": "Reverse Compatible"}
+]
+data_catalogue = {
+    "SmartSensor 1": {"temperature": 22, "humidity": 45},
+    "LegacyCamera": {"video_stream": "streaming_url"}
+}
+
+# Visualize
+visualize_iot_synthesizer(devices, data_catalogue)
