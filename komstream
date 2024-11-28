@@ -1,0 +1,59 @@
+import time
+
+class StreamProcessor:
+    def __init__(self):
+        """
+        Initialize a series of processors for handling IP traffic.
+        """
+        self.processors = [self.validate_ip, self.analyze_ip, self.enrich_ip]
+        self.connection_status = False
+
+    def validate_ip(self, ip):
+        """
+        Validate the incoming IP address.
+        """
+        print(f"Validating IP: {ip}")
+        if isinstance(ip, str) and ip.count(".") == 3:  # Basic IPv4 check
+            return True
+        return False
+
+    def analyze_ip(self, ip):
+        """
+        Perform analysis on the IP address.
+        """
+        print(f"Analyzing IP: {ip}")
+        return f"Analysis of {ip} completed."
+
+    def enrich_ip(self, ip):
+        """
+        Enrich the IP address with additional metadata.
+        """
+        print(f"Enriching IP: {ip}")
+        return f"{ip} enriched with metadata."
+
+    def route_connection(self):
+        """
+        Simulate establishing a connection through a router.
+        """
+        print("Routing connection through the router...")
+        time.sleep(1)  # Simulate delay
+        self.connection_status = True
+        print("Connection successfully routed.")
+
+    def process_ip(self, ip):
+        """
+        Process the IP address through the stream of processors.
+        """
+        for processor in self.processors:
+            result = processor(ip)
+            if isinstance(result, bool) and not result:
+                print("IP validation failed. Terminating process.")
+                return
+        self.route_connection()
+
+# Example Usage
+stream = StreamProcessor()
+
+# Input IP to the stream
+ip_address = "192.168.1.1"
+stream.process_ip(ip_address)
