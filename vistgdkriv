@@ -1,0 +1,36 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+def visualize_tgdk_river(data_flow, spillover_data, corrugated_matrix):
+    """
+    Visualize the TGDK River system with data flows and corrugated matrix.
+    """
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Plot main data flow
+    y_main = [1] * len(data_flow)
+    ax.scatter(data_flow, y_main, color='blue', label='Main Data Flow')
+
+    # Plot spillover gates
+    y_spillover = [2] * len(spillover_data)
+    ax.scatter(spillover_data, y_spillover, color='orange', label='Spillover Gates')
+
+    # Plot corrugated matrix
+    y_corrugated = [3] * len(corrugated_matrix)
+    ax.scatter(corrugated_matrix, y_corrugated, color='green', label='Corrugated Matrix')
+
+    # Configure plot
+    ax.set_yticks([1, 2, 3])
+    ax.set_yticklabels(['Main Flow', 'Spillover', 'Corrugated Matrix'])
+    ax.set_title("TGDK River System Visualization")
+    ax.legend()
+    plt.grid(True)
+    plt.show()
+
+# Example data for visualization
+data_flow = list(range(10))
+spillover_data = list(range(10, 15))
+corrugated_matrix = [f"Processed-{i}" for i in range(10, 15)]
+
+# Visualize the TGDK River system
+visualize_tgdk_river(data_flow, spillover_data, corrugated_matrix)
