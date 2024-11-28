@@ -1,0 +1,54 @@
+class TGDKSynthesizer:
+    def __init__(self):
+        """
+        Initialize the TGDK Synthesizer for IoT reverse compatibility and data sharing.
+        """
+        self.iot_devices = []  # List of connected IoT devices
+        self.data_catalogue = {}  # Mapping of device to shared data
+
+    def add_device(self, device_name, compatibility):
+        """
+        Add an IoT device with its compatibility status.
+        """
+        print(f"Adding device: {device_name}, Compatibility: {compatibility}")
+        self.iot_devices.append({"device": device_name, "compatibility": compatibility})
+
+    def share_data(self, device_name, data):
+        """
+        Share data from a specific device into the catalogue.
+        """
+        if device_name in [device["device"] for device in self.iot_devices]:
+            self.data_catalogue[device_name] = data
+            print(f"Data shared from {device_name}: {data}")
+        else:
+            print(f"Device {device_name} not found. Cannot share data.")
+
+    def retrieve_shared_data(self, device_name):
+        """
+        Retrieve shared data for a specific device.
+        """
+        return self.data_catalogue.get(device_name, "No data found.")
+
+    def display_catalogue(self):
+        """
+        Display the full sharing catalogue.
+        """
+        print("Sharing Catalogue:")
+        for device, data in self.data_catalogue.items():
+            print(f"- Device: {device}, Data: {data}")
+
+
+# Example Usage
+synthesizer = TGDKSynthesizer()
+
+# Add devices
+synthesizer.add_device("SmartSensor 1", "Compatible")
+synthesizer.add_device("LegacyCamera", "Reverse Compatible")
+
+# Share data
+synthesizer.share_data("SmartSensor 1", {"temperature": 22, "humidity": 45})
+synthesizer.share_data("LegacyCamera", {"video_stream": "streaming_url"})
+
+# Retrieve and display data
+print(synthesizer.retrieve_shared_data("SmartSensor 1"))
+synthesizer.display_catalogue()
