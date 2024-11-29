@@ -1,0 +1,43 @@
+import math
+
+def simulate_9_vector_flag_system(x, r, z, t, v12, radmv, prolin, ds, os, offset_deleted_sequence):
+    # Calculating each vector
+    aS = 2 * (x**3) * math.pi * r * z
+    bS = (aS * math.pi / 3) + prolin
+    cS = bS * ds * offset_deleted_sequence
+    dS = (math.pi * r * (z**2)) * t
+    fS = (aS * math.pi / 3) / os
+    gS = v12 + radmv
+    hS = 2 * (math.pi / 3) - 360
+    c0 = (dS / t)  # Example derivative calculation
+
+    # Return the calculated vectors
+    return {
+        "aS": aS,
+        "bS": bS,
+        "cS": cS,
+        "dS": dS,
+        "fS": fS,
+        "gS": gS,
+        "hS": hS,
+        "c0": c0
+    }
+
+# Example input values
+x = 2
+r = 3
+z = 4
+t = 1.5
+v12 = 10
+radmv = 5
+prolin = 7
+ds = 1.2
+os = 0.8
+offset_deleted_sequence = 2
+
+# Run the simulation
+result = simulate_9_vector_flag_system(x, r, z, t, v12, radmv, prolin, ds, os, offset_deleted_sequence)
+
+# Print the results
+for vector, value in result.items():
+    print(f"{vector}: {value:.4f}")
