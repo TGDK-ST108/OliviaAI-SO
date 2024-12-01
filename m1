@@ -1,0 +1,14 @@
+mkdir mirageos-boot
+cd mirageos-boot
+
+# Download MirageOS repository (replace with your repo URL)
+git clone https://github.com/<your_repo>/mirageos.git .
+
+# Configure MirageOS with Sector3 module
+make configure
+
+# Compile MirageOS
+make all
+
+# Build the bootable ISO
+grub-mkrescue -o mirageos.iso .
