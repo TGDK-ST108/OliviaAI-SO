@@ -1,0 +1,56 @@
+import numpy as np
+from multiprocessing import Process, Queue
+from typing import Callable, Any, List, Dict
+
+
+class DysegliaActor:
+    def __init__(self, func: Callable, name: str):
+        self.func = func
+        self.name = name
+        self.queue = Queue()
+        self.process = Process(target=self._worker)
+        self.process.start()
+
+    def send(self, message: Any):
+        self.queue.put(message)
+
+    def _worker(self):
+        while True:
+            message = self.queue.get()
+            if message == "STOP":
+                break
+            self.func(message)
+
+    def stop(self):
+        self.queue.put("STOP")
+        self.process.join()
+
+
+class ModelRangeTaskManager:
+    def __init__(self, models: List[Callable]):
+        self.models = models
+
+    def distribute_task(self, input_data):
+        results = {}
+        for i, model in enumerate(self.models):
+            results[f"Model_{i}"] = model(input_data)
+        return results
+
+
+class TalentAttributionSequencer:
+    def __init__(self, widgets: List[str]):
+        self.widgets = widgets
+        self.frequencies = {widget: 0 for widget in widgets}
+
+    def assign_frequency(self, widget: str, frequency: float):
+        if widget in self.frequencies:
+            self.frequencies[widget] = frequency
+
+    def distribute_frequencies(self, degree_field: Dict[str, float]):
+        total_degree = sum(degree_field.values())
+        for widget, degree in degree_field.items():
+            frequency = degree / total_degree if total_degree > 0 else 0
+            self.assign_frequency(widget, frequency)
+
+    def get_frequencies(self):
+        return self.frequencies
