@@ -1,0 +1,30 @@
+import asyncio
+from typing import Callable, List
+
+class DatskyTask:
+    def __init__(self, func: Callable, dependencies: List = None, respect: int = 1):
+        self.func = func
+        self.dependencies = dependencies or []
+        self.respect = respect  # Task priority
+        self.result = None
+
+    async def run(self):
+        # Run dependencies first
+        for dep in self.dependencies:
+            await dep.run()
+        # Run the task
+        self.result = await asyncio.to_thread(self.func)
+        return self.result
+
+
+class DatskyManager:
+    def __init__(self):
+        self.tasks = []
+
+    def add_task(self, task: DatskyTask):
+        self.tasks.append(task)
+
+    async def execute(self):
+        # Sort tasks by respect
+        self.tasks.sort(key=lambda task: task.respect, reverse=True)
+        await asyncio.gather(*(task.run() for task in self.tasks))
