@@ -1,0 +1,82 @@
+from flask import Flask, jsonify, request
+import numpy as np
+
+app = Flask(__name__)
+
+class SequenceProcessor:
+    def __init__(self):
+        self.sequences = []  # To store processed data
+
+    def analyze_sequence(self, sequence):
+        """
+        Analyze a sequence to find the centerfold value.
+        """
+        sequence = sorted(sequence)  # Sort the sequence
+        centerfold = sequence[len(sequence) // 2]  # Find the median
+        return centerfold
+
+    def fragment_sequence(self, sequence, fragments=5):
+        """
+        Fragment the sequence into smaller parts.
+        """
+        chunk_size = max(len(sequence) // fragments, 1)
+        return [sequence[i:i + chunk_size] for i in range(0, len(sequence), chunk_size)]
+
+    def calculate_volume_efficiency(self, fragments):
+        """
+        Calculate efficiency metrics for each fragment.
+        """
+        return [sum(fragment) / len(fragment) for fragment in fragments]
+
+    def process_sequence(self, sequence):
+        """
+        Process the sequence, returning analysis and fragmentation results.
+        """
+        centerfold = self.analyze_sequence(sequence)
+        fragments = self.fragment_sequence(sequence)
+        efficiencies = self.calculate_volume_efficiency(fragments)
+
+        # Store results
+        self.sequences.append({
+            "sequence": sequence,
+            "centerfold": centerfold,
+            "fragments": fragments,
+            "efficiencies": efficiencies
+        })
+
+        return {
+            "sequence": sequence,
+            "centerfold": centerfold,
+            "fragments": fragments,
+            "efficiencies": efficiencies
+        }
+
+# Initialize Processor
+processor = SequenceProcessor()
+
+@app.route('/process_sequence', methods=['POST'])
+def process_sequence():
+    """
+    API endpoint to process a sequence.
+    """
+    data = request.json
+    sequence = data.get("sequence")
+
+    if not sequence or not isinstance(sequence, list):
+        return jsonify({"error": "Invalid sequence provided"}), 400
+
+    try:
+        result = processor.process_sequence(sequence)
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/get_processed_sequences', methods=['GET'])
+def get_processed_sequences():
+    """
+    API endpoint to retrieve all processed sequences.
+    """
+    return jsonify(processor.sequences), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
