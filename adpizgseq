@@ -1,0 +1,50 @@
+from flask import Flask, jsonify, request
+import numpy as np
+
+app = Flask(__name__)
+
+class SequenceAPI:
+    def __init__(self):
+        self.sequences = []  # Store sequences for API access
+
+    def analyze_sequence(self, sequence):
+        """
+        Analyze a sequence to find the centerfold value.
+        """
+        sequence = sorted(sequence)  # Sort the sequence
+        centerfold = sequence[len(sequence) // 2]  # Find the median
+        return centerfold
+
+    def add_sequence(self, sequence):
+        """
+        Add a sequence and analyze its centerfold.
+        """
+        centerfold = self.analyze_sequence(sequence)
+        self.sequences.append({"sequence": sequence, "centerfold": centerfold})
+        return {"sequence": sequence, "centerfold": centerfold}
+
+# Initialize SequenceAPI
+sequence_api = SequenceAPI()
+
+@app.route('/add_sequence', methods=['POST'])
+def add_sequence():
+    """
+    API endpoint to add a sequence and return its centerfold value.
+    """
+    data = request.json
+    sequence = data.get("sequence")
+    if not sequence:
+        return jsonify({"error": "No sequence provided"}), 400
+
+    result = sequence_api.add_sequence(sequence)
+    return jsonify(result), 200
+
+@app.route('/get_sequences', methods=['GET'])
+def get_sequences():
+    """
+    API endpoint to retrieve all stored sequences and their centerfolds.
+    """
+    return jsonify(sequence_api.sequences), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
