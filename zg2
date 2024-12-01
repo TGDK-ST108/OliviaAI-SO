@@ -1,0 +1,49 @@
+import numpy as np
+import random
+import matplotlib.pyplot as plt
+
+class FiveFoldStarWithMatrices:
+    def __init__(self, matrices):
+        # Initialize star with five districts and corresponding matrices
+        self.districts = {
+            f"District-{i+1}": {
+                "matrix": matrices[i],
+                "data": []
+            }
+            for i in range(len(matrices))
+        }
+
+    def distribute_data(self, data_block):
+        """
+        Distribute data across districts using matrix transformations.
+        """
+        for district, info in self.districts.items():
+            transformed_data = np.dot(info["matrix"], data_block)  # Apply matrix transformation
+            info["data"].append(transformed_data)
+        print("Data distributed across districts using matrices.")
+
+    def visualize_district_matrices(self):
+        """
+        Visualize matrices as heatmaps for each district.
+        """
+        for district, info in self.districts.items():
+            plt.imshow(info["matrix"], cmap='viridis', interpolation='nearest')
+            plt.title(f"{district} Matrix")
+            plt.colorbar(label="Value")
+            plt.show()
+
+# Example matrices and data
+matrices = [
+    np.array([[1, 0], [0, 2]]),
+    np.array([[2, 1], [1, 3]]),
+    np.array([[3, 0], [0, 4]]),
+    np.array([[4, 2], [2, 5]]),
+    np.array([[5, 1], [1, 6]])
+]
+
+data_block = np.array([10, 20])  # Example data block
+
+# Create and use the FiveFoldStarWithMatrices
+star = FiveFoldStarWithMatrices(matrices)
+star.distribute_data(data_block)
+star.visualize_district_matrices()
