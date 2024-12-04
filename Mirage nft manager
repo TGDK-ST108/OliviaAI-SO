@@ -1,0 +1,17 @@
+import sys
+from nft_manager import NFTManager
+
+def initialize_mirage_os():
+    print("Initializing Mirage OS...")
+    nft_manager = NFTManager()
+
+    # Generate NFT #78 on boot
+    print("Generating NFT #78...")
+    nft_path = nft_manager.create_nft(78)
+    print(f"NFT #78 ready at {nft_path}")
+
+    # Start additional OS services
+    print("Starting services...")
+
+if __name__ == "__main__":
+    initialize_mirage_os()
