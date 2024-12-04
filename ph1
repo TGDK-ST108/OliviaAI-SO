@@ -1,0 +1,50 @@
+import hashlib
+import os
+import logging
+from cryptography.fernet import Fernet
+
+# Initialize logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
+
+class UserProtectionProtocol:
+    def __init__(self):
+        self.key = Fernet.generate_key()
+        self.cipher = Fernet(self.key)
+        logging.info("Protection Protocol Initialized")
+
+    def encrypt_data(self, data):
+        """Encrypt user data."""
+        encrypted = self.cipher.encrypt(data.encode())
+        logging.info("Data encrypted successfully")
+        return encrypted
+
+    def decrypt_data(self, encrypted_data):
+        """Decrypt user data."""
+        decrypted = self.cipher.decrypt(encrypted_data).decode()
+        logging.info("Data decrypted successfully")
+        return decrypted
+
+    def detect_anomalies(self, activity_log):
+        """Detect anomalies in user activity."""
+        suspicious_patterns = ["login_failed", "unusual_location"]
+        for entry in activity_log:
+            if any(pattern in entry for pattern in suspicious_patterns):
+                logging.warning(f"Anomaly detected: {entry}")
+                return True
+        return False
+
+    def secure_communication(self, message):
+        """Securely send and receive messages."""
+        hash_obj = hashlib.sha256(message.encode())
+        logging.info("Message secured using SHA-256 hash")
+        return hash_obj.hexdigest()
+
+# Example Usage
+if __name__ == "__main__":
+    protocol = UserProtectionProtocol()
+    encrypted_data = protocol.encrypt_data("Sensitive user data")
+    decrypted_data = protocol.decrypt_data(encrypted_data)
+    logging.info(f"Decrypted Data: {decrypted_data}")
+
+    activity_log = ["login_failed", "unusual_location detected"]
+    protocol.detect_anomalies(activity_log)
