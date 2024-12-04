@@ -1,0 +1,45 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+class RadialMeasure:
+    def __init__(self, num_rotators=8):
+        self.num_rotators = num_rotators  # 8 rotators for 45-degree segments
+        self.rotation_angles = np.linspace(0, 360, num_rotators, endpoint=False)
+        self.qvgrf_values = []
+        self.flashpoints = []
+
+    def calculate_qvgrf(self, predicate_values):
+        """Apply QVGRF to predicate values."""
+        gradients = np.gradient(predicate_values)
+        qvgrf = np.sqrt(np.sum(gradients**2, axis=0))  # Example QVGRF calculation
+        self.qvgrf_values = qvgrf
+        return qvgrf
+
+    def flash_detector(self, qvgrf_threshold=0.7):
+        """Detect flashpoints based on QVGRF values."""
+        for angle, value in zip(self.rotation_angles, self.qvgrf_values):
+            if value > qvgrf_threshold:
+                self.flashpoints.append(angle)
+
+    def visualize(self):
+        """Visualize the radial measure with flashpoints."""
+        fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+        ax.scatter(np.deg2rad(self.rotation_angles), self.qvgrf_values, c='blue', label='QVGRF Values')
+        
+        # Highlight flashpoints
+        for flash_angle in self.flashpoints:
+            ax.scatter(np.deg2rad(flash_angle), 1, c='red', label='Flashpoint')
+
+        ax.set_title("Radial Measure with QVGRF and Flashpoints")
+        plt.legend()
+        plt.show()
+
+# Example Usage
+if __name__ == "__main__":
+    # Example predicate values (e.g., from facial, body language analysis)
+    predicate_values = np.random.rand(8)
+
+    radial_measure = RadialMeasure()
+    qvgrf = radial_measure.calculate_qvgrf(predicate_values)
+    radial_measure.flash_detector(qvgrf_threshold=0.5)  # Set a QVGRF threshold
+    radial_measure.visualize()
