@@ -1,0 +1,21 @@
+import asyncio
+import websockets
+
+async def handle_connection(websocket, path):
+    print("Connection established")
+    try:
+        async for message in websocket:
+            print(f"Received: {message}")
+            response = process_data(message)
+            await websocket.send(response)
+    except websockets.ConnectionClosed as e:
+        print("Connection closed", e)
+
+def process_data(message):
+    # Placeholder for Mirage OS processing
+    return f"Processed: {message}"
+
+start_server = websockets.serve(handle_connection, "localhost", 8765)
+
+asyncio.get_event_loop().run_until_complete(start_server)
+asyncio.get_event_loop().run_forever()
