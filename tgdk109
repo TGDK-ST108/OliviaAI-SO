@@ -1,0 +1,20 @@
+class NFTManager:
+    def __init__(self):
+        self.nfts = {}
+
+    def create_nft(self, nft_id):
+        generator = NFTGenerator(nft_id)
+        nft_path = generator.generate_nft()
+        self.nfts[nft_id] = generator.get_metadata()
+        print(f"NFT #{nft_id} created successfully!")
+        return nft_path
+
+    def list_nfts(self):
+        return self.nfts
+
+# Example usage in Mirage OS
+if __name__ == "__main__":
+    nft_manager = NFTManager()
+    nft_78_path = nft_manager.create_nft(78)
+    print(f"Generated NFT saved at: {nft_78_path}")
+    print("Available NFTs:", nft_manager.list_nfts())
