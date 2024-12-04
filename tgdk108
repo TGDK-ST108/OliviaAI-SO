@@ -1,0 +1,80 @@
+import os
+from PIL import Image, ImageDraw, ImageFont
+import json
+import random
+
+class NFTGenerator:
+    def __init__(self, nft_id, output_dir="nft_output"):
+        self.nft_id = nft_id
+        self.output_dir = output_dir
+        self.metadata = {}
+
+        # Ensure the output directory exists
+        if not os.path.exists(self.output_dir):
+            os.makedirs(self.output_dir)
+
+    def generate_nft(self):
+        # Define attributes
+        attributes = {
+            "Color Palette": ["Red", "Blue", "Green", "Yellow", "Purple"],
+            "Shape": ["Circle", "Square", "Triangle", "Hexagon"],
+            "Pattern": ["Solid", "Striped", "Dotted", "Gradient"]
+        }
+
+        # Randomly select attributes
+        self.metadata = {key: random.choice(value) for key, value in attributes.items()}
+        self.metadata["ID"] = self.nft_id
+
+        # Create canvas
+        img = Image.new("RGB", (500, 500), "white")
+        draw = ImageDraw.Draw(img)
+
+        # Set background
+        color = self.metadata["Color Palette"].lower()
+        draw.rectangle([0, 0, 500, 500], fill=color)
+
+        # Draw shape
+        shape = self.metadata["Shape"]
+        if shape == "Circle":
+            draw.ellipse([150, 150, 350, 350], outline="black", width=5)
+        elif shape == "Square":
+            draw.rectangle([150, 150, 350, 350], outline="black", width=5)
+        elif shape == "Triangle":
+            draw.polygon([250, 100, 150, 400, 350, 400], outline="black", width=5)
+        elif shape == "Hexagon":
+            draw.polygon([(250, 50), (350, 150), (350, 350), (250, 450), (150, 350), (150, 150)], outline="black", width=5)
+
+        # Add pattern
+        pattern = self.metadata["Pattern"]
+        if pattern == "Striped":
+            for y in range(150, 351, 10):
+                draw.line([150, y, 350, y], fill="black", width=2)
+        elif pattern == "Dotted":
+            for x in range(150, 351, 20):
+                for y in range(150, 351, 20):
+                    draw.ellipse([x-2, y-2, x+2, y+2], fill="black")
+        elif pattern == red", "orange", "yellow"]):
+                draw.rectangle([0, i * 80, 500, (i + 1) * 80], fill=color)
+
+        # Add text
+        font = ImageFont.load_default()
+        title = f"NFT #{self.nft_id}"
+        draw.text((10, 10), title, fill="black", font=font)
+
+        # Save the NFT image
+        nft_image_path = os.path.join(self.output_dir, f"nft_{self.nft_id}.png")
+        img.save(nft_image_path)
+
+        # Save metadata
+        self.save_metadata()
+        return nft_image_path
+
+    def save_metadata(self):
+        metadata_path = os.path.join(self.output_dir, f"nft_{self.nft_id}_metadata.json")
+        with open(metadata_path, "w") as f:
+            json.dump(self.metadata, f, indent=4)
+
+        print(f"Metadata saved for NFT #{self.nft_id}: {metadata_path}")
+
+    def get_metadata(self):
+        return self.metadata
