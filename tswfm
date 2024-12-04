@@ -1,0 +1,17 @@
+class UnifiedWorkflow:
+    def __init__(self, key_path="config/ox_key.key", model_name="microsoft/OliviaAI"):
+        self.key = self.load_or_create_key(key_path)
+        self.steelox_manager = SteelOxWaveManager()
+        # Initialize other components...
+
+    def process_iot_data(self, devices):
+        """Integrates SteelOx for IoT data processing."""
+        data = self.steelox_manager.collect_data(devices)
+        for device, readings in data.items():
+            logging.info(f"Collected data from {device}: {readings[:5]}")
+        return data
+
+    def optimize_iot_with_rl(self, devices):
+        """Optimize IoT operations with RL agents."""
+        env = WorkflowEnv(self.process_iot_data(devices), y)
+        self.steelox_manager.assign_rl_agent(env)
