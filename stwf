@@ -1,0 +1,125 @@
+import logging
+import json
+from cryptography.fernet import Fernet
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from stable_baselines3 import PPO
+import gym
+
+# Enhanced logging for accountability
+logging.basicConfig(level=logging.INFO, filename="system_logs.log", filemode="a")
+logger = logging.getLogger("MilitaryCompliance")
+
+class SecureDataManager:
+    """Secure Data Management adhering to military standards."""
+    
+    def __init__(self, key_path="config/military_key.key"):
+        self.key = self.load_or_create_key(key_path)
+
+    def load_or_create_key(self, key_path):
+        if not os.path.exists(key_path):
+            key = Fernet.generate_key()
+            with open(key_path, "wb") as key_file:
+                key_file.write(key)
+            logger.info("Encryption key generated.")
+        else:
+            with open(key_path, "rb") as key_file:
+                key = key_file.read()
+        return key
+
+    def encrypt_data(self, input_path, output_path):
+        """Encrypt data files for secure storage."""
+        try:
+            with open(input_path, "rb") as file:
+                data = file.read()
+            fernet = Fernet(self.key)
+            encrypted = fernet.encrypt(data)
+            with open(output_path, "wb") as file:
+                file.write(encrypted)
+            logger.info(f"Data encrypted successfully: {output_path}")
+        except Exception as e:
+            logger.error(f"Encryption failed: {e}")
+
+    def decrypt_data(self, input_path, output_path):
+        """Decrypt data files for secure processing."""
+        try:
+            with open(input_path, "rb") as file:
+                encrypted_data = file.read()
+            fernet = Fernet(self.key)
+            decrypted = fernet.decrypt(encrypted_data)
+            with open(output_path, "wb") as file:
+                file.write(decrypted)
+            logger.info(f"Data decrypted successfully: {output_path}")
+        except Exception as e:
+            logger.error(f"Decryption failed: {e}")
+
+# Initialize Secure Data Manager
+secure_manager = SecureDataManager()
+
+# Example: Encrypt sensitive data
+secure_manager.encrypt_data("sensitive_data.csv", "sensitive_data_encrypted.csv")
+
+class MilitaryRLAgent:
+    """Reinforcement Learning Agent for Military Use."""
+
+    def __init__(self, features, labels):
+        self.features = features
+        self.labels = labels
+        self.env = MilitaryEnv(features, labels)
+        self.rl_model = PPO("MlpPolicy", self.env, verbose=1)
+
+    def train_agent(self, timesteps=10000):
+        """Train the RL agent."""
+        try:
+            logger.info("Training RL agent started.")
+            self.rl_model.learn(total_timesteps=timesteps)
+            logger.info("Training RL agent completed.")
+        except Exception as e:
+            logger.error(f"RL Training failed: {e}")
+
+    def save_agent(self, filepath):
+        """Save the trained agent."""
+        try:
+            self.rl_model.save(filepath)
+            logger.info(f"RL agent saved at {filepath}.")
+        except Exception as e:
+            logger.error(f"Saving RL agent failed: {e}")
+
+class MilitaryEnv(gym.Env):
+    """Custom Environment for Military RL Tasks."""
+    def __init__(self, features, labels):
+        super().__init__()
+        assert len(features) == len(labels), "Features and labels must match."
+        self.features = features
+        self.labels = labels
+        self.current_idx = 0
+
+    def step(self, action):
+        """Evaluate action and provide feedback."""
+        reward = 1 if action == self.labels[self.current_idx] else -1
+        self.current_idx += 1
+        done = self.current_idx >= len(self.features)
+        return self.features[self.current_idx - 1], reward, done, {}
+
+    def reset(self):
+        """Reset environment for new episode."""
+        self.current_idx = 0
+        return self.features[self.current_idx]
+
+# Train-Test Split and RL Example
+dataset = np.load("dataset.npy", allow_pickle=True)
+X = [x["features"] for x in dataset]
+y = [x["label"] for x in dataset]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Train RL Agent
+military_agent = MilitaryRLAgent(X_train, y_train)
+military_agent.train_agent()
+
+# Save trained agent
+military_agent.save_agent("military_rl_agent.zip")
+
+# Security Logging
+logger.info("Military RL environment setup completed.")
