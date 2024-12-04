@@ -1,0 +1,25 @@
+import matplotlib.pyplot as plt
+
+# Example Competitor Scores
+categories = ['Efficiency', 'Accuracy', 'Scalability', 'Adaptability', 'Cost-Effectiveness']
+system_scores = [85, 90, 80, 70, 75]  # Example scores for the radial measure system
+competitor_a_scores = [80, 85, 75, 65, 70]
+competitor_b_scores = [75, 80, 70, 60, 65]
+
+# Radar Chart
+angles = np.linspace(0, 2 * np.pi, len(categories), endpoint=False).tolist()
+system_scores += system_scores[:1]
+competitor_a_scores += competitor_a_scores[:1]
+competitor_b_scores += competitor_b_scores[:1]
+angles += angles[:1]
+
+fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
+ax.fill(angles, system_scores, color='blue', alpha=0.25, label="System")
+ax.fill(angles, competitor_a_scores, color='red', alpha=0.25, label="Competitor A")
+ax.fill(angles, competitor_b_scores, color='green', alpha=0.25, label="Competitor B")
+ax.set_yticks([])
+ax.set_xticks(angles[:-1])
+ax.set_xticklabels(categories)
+ax.legend()
+plt.title("Competitor Benchmarking")
+plt.show()
