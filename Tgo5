@@ -1,0 +1,101 @@
+import os
+import json
+import requests
+from stem import Signal
+from stem.control import Controller
+from PIL import Image, ImageDraw, ImageFont
+import random
+import io
+
+# Function to create a new Tor circuit
+def renew_tor_circuit(password="torpassword"):
+    with Controller.from_port(port=9051) as controller:
+        controller.authenticate(password=password)
+        controller.signal(Signal.NEWNYM)
+
+# Function to create a proxy session using Tor
+def get_tor_session():
+    session = requests.Session()
+    session.proxies = {
+        'http': 'socks5h://127.0.0.1:9050',
+        'https': 'socks5h://127.0.0.1:9050',
+    }
+    return session
+
+# Generate Metadata for NFT
+def generate_metadata(name, description, code_snippet, tags):
+    metadata = {
+        "name": name,
+        "description": description,
+        "code_snippet": code_snippet,
+        "tags": tags,
+        "random_id": random.randint(1000, 9999)
+    }
+    return metadata
+
+# Generate Onion-Based Visual Representation
+def create_visual_representation(metadata):
+    img = Image.new('RGB', (512, 512), color=(73, 109, 137))
+    draw = ImageDraw.Draw(img)
+
+    # Add Metadata Text
+    font = ImageFont.load_default()
+    draw.text((10, 10), f"Name: {metadata['name']}", fill="white", font=font)
+    draw.text((10, 30), f"ID: {metadata['random_id']}", fill="white", font=font)
+
+    # Draw Onion Layer Pattern
+    for i in range(5):
+        x0, y0 = random.randint(50, 200), random.randint(50, 200)
+        x1, y1 = random.randint(300, 500), random.randint(300, 500)
+        draw.ellipse([x0, y0, x1, y1], outline="white", width=2)
+
+    return img
+
+# Save Visual and Metadata
+def save_nft_data(metadata, img, output_dir):
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Save Metadata
+    metadata_path = os.path.join(output_dir, f"{metadata['random_id']}_metadata.json")
+    with open(metadata_path, 'w') as f:
+        json.dump(metadata, f, indent=4)
+
+    # Save Image
+    image_path = os.path.join(output_dir, f"{metadata['random_id']}_visual.png")
+    img.save(image_path)
+
+    return metadata_path, image_path
+
+# Main Process
+def main():
+    renew_tor_circuit()  # Renew Tor circuit
+    session = get_tor_session()
+
+    # Example metadata
+    name = "Web4 NFT Example"
+    description = "This NFT represents the layered complexity of Web4 development."
+    code_snippet = "def example_function():\n    return 'Hello, Web4!'"
+    tags = ["Web4", "NFT", "Onion", "Metadata"]
+
+    # Generate metadata
+    metadata = generate_metadata(name, description, code_snippet, tags)
+
+    # Create visual representation
+    visual = create_visual_representation(metadata)
+
+    # Save data
+    output_dir = "./nft_output"
+    metadata_path, image_path = save_nft_data(metadata, visual, output_dir)
+
+    print(f"NFT Metadata saved at: {metadata_path}")
+    print(f"NFT Visual saved at: {image_path}")
+
+    # Example of connecting to an onion service
+    try:
+        response = session.get("http://exampleonion.onion")  # Replace with an actual onion URL
+        print("Response from onion service:", response.text[:200])
+    except requests.RequestException as e:
+        print("Error connecting to onion service:", e)
+
+if __name__ == "__main__":
+    main()
