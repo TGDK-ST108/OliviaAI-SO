@@ -1,0 +1,63 @@
+open Lwt.Infix
+open Mirage
+
+module CarrierService (C : CONSOLE) (HTTP : COHTTP_CLIENT) = struct
+  (* Tardigrade API configuration *)
+  let api_url = "https://api.tardigrade.io/v1"
+  let api_key = "your-tardigrade-api-key"
+
+  (* Function to upload data to Tardigrade *)
+  let upload_data http console bucket_name file_name data =
+    let endpoint = Printf.sprintf "%s/buckets/%s/files/%s" api_url bucket_name file_name in
+    let headers = Cohttp.Header.init_with "Authorization" (Printf.sprintf "Bearer %s" api_key) in
+    let body = Cohttp_lwt.Body.of_string data in
+    let uri = Uri.of_string endpoint in
+
+    HTTP.post ~headers ~body uri >>= fun (resp, body) ->
+    match Cohttp.Response.status resp with
+    | `OK ->
+        C.log console (Printf.sprintf "Successfully uploaded %s to %s" file_name bucket_name);
+        Lwt.return_unit
+    | _ ->
+        C.log console "Failed to upload data.";
+        Cohttp_lwt.Body.to_string body >>= fun body_str ->
+        C.log console (Printf.sprintf "Error: %s" body_str);
+        Lwt.return_unit
+
+  (* Function to retrieve data from Tardigrade *)
+  let retrieve_data http console bucket_name file_name =
+    let endpoint = Printf.sprintf "%s/buckets/%s/files/%s" api_url bucket_name file_name in
+    let headers = Cohttp.Header.init_with "Authorization" (Printf.sprintf "Bearer %s" api_key) in
+    let uri = Uri.of_string endpoint in
+
+    HTTP.get ~headers uri >>= fun (resp, body) ->
+    match Cohttp.Response.status resp with
+    | `OK ->
+        Cohttp_lwt.Body.to_string body >>= fun data ->
+        C.log console (Printf.sprintf "Retrieved data for %s: %s" file_name data);
+        Lwt.return (Some data)
+    | _ ->
+        C.log console "Failed to retrieve data.";
+        Lwt.return_none
+
+  (* Main function *)
+  let start console http =
+    let bucket_name = "mirage-bucket" in
+    let file_name = "test_file.txt" in
+    let file_data = "This is a test data string to upload to Tardigrade." in
+
+    (* Upload and retrieve example *)
+    upload_data http console bucket_name file_name file_data >>= fun () ->
+    retrieve_data http console bucket_name file_name >>= fun data_opt ->
+    (match data_opt with
+    | Some data -> C.log console (Printf.sprintf "Data retrieved: %s" data)
+    | None -> C.log console "No data retrieved.");
+    Lwt.return_unit
+end
+
+(* Mirage configuration *)
+let () =
+  let packages = [package "cohttp-lwt"; package "mirage"] in
+  register ~packages "carrier_service" [
+    main (module CarrierService) $ default_console $ cohttp_client
+  ]
