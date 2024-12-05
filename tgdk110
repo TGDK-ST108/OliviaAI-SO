@@ -1,0 +1,31 @@
+from web3 import Web3
+
+# Connect to blockchain
+blockchain_url = "http://127.0.0.1:8545"  # Replace with TGDK's blockchain node
+web3 = Web3(Web3.HTTPProvider(blockchain_url))
+
+# Smart contract example
+contract_address = "0xYourSmartContractAddress"
+abi = [
+    {
+        "constant": False,
+        "inputs": [{"name": "device", "type": "string"}],
+        "name": "logDeviceActivity",
+        "outputs": [],
+        "type": "function",
+    }
+]
+contract = web3.eth.contract(address=contract_address, abi=abi)
+
+# Log device activity
+def log_activity(device_id, activity):
+    transaction = contract.functions.logDeviceActivity(device_id, activity).transact(
+        {"from": web3.eth.accounts[0]}
+    )
+    receipt = web3.eth.waitForTransactionReceipt(transaction)
+    return receipt
+
+# Example usage
+device_id = "TGDK_Device_123"
+activity = "Sensor data upload"
+log_activity(device_id, activity)
