@@ -1,0 +1,17 @@
+pragma solidity ^0.8.0;
+
+contract TGDK7GBlockchain {
+    struct DeviceActivity {
+        string deviceId;
+        string activity;
+        uint timestamp;
+    }
+
+    mapping(uint => DeviceActivity) public activities;
+    uint public activityCount;
+
+    function logDeviceActivity(string memory deviceId, string memory activity) public {
+        activities[activityCount] = DeviceActivity(deviceId, activity, block.timestamp);
+        activityCount++;
+    }
+}
