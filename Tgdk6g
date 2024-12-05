@@ -1,0 +1,28 @@
+from tgdk_network import QuantumRouter, BlockchainSecurity, IoTGateway
+import time
+
+# Initialize the TGDK 6G Network
+network_router = QuantumRouter("6G_TGDK")
+blockchain_security = BlockchainSecurity()
+iot_gateway = IoTGateway()
+
+# Configure Secure Call Setup
+def setup_secure_call(caller_id, receiver_id):
+    # Authenticate Caller and Receiver using Blockchain
+    if not blockchain_security.verify_user(caller_id) or not blockchain_security.verify_user(receiver_id):
+        print("Authentication failed!")
+        return
+
+    # Establish a Quantum Encrypted Route
+    route = network_router.establish_route(caller_id, receiver_id)
+    print(f"Secure route established: {route}")
+
+    # Simulate Call Data Transmission
+    for i in range(5):
+        print(f"Transmitting data packet {i+1}...")
+        time.sleep(0.5)  # Simulate data transfer delay
+
+    print("Call completed successfully!")
+
+# Example: Simulate a Phone Call
+setup_secure_call("Alice", "Bob")
