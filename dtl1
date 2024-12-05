@@ -1,0 +1,12 @@
+import asyncio
+import websockets
+
+async def send_data(uri, message):
+    async with websockets.connect(uri) as websocket:
+        await websocket.send(message)
+        response = await websocket.recv()
+        print(f"Response: {response}")
+
+asyncio.get_event_loop().run_until_complete(
+    send_data("ws://127.0.0.1:8080", "Test data over 7G")
+)
