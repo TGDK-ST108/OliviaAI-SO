@@ -1,0 +1,14 @@
+def test_6g_network(latency_threshold, speed_threshold):
+    # Monitor latency and speed
+    latency = OliviaAI.monitor_network_latency()
+    speed = OliviaAI.monitor_network_speed()
+
+    # Analyze results
+    if latency < latency_threshold and speed > speed_threshold:
+        print("Network Test Passed!")
+    else:
+        print("Network Test Failed!")
+        OliviaAI.suggest_optimizations()
+
+# Test with defined thresholds
+test_6g_network(10, 1000)  # Latency < 10ms, Speed > 1000 Mbps
