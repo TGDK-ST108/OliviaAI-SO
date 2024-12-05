@@ -1,0 +1,24 @@
+import hashlib
+import hmac
+
+class ValveVectorLock:
+    def __init__(self, secret_key):
+        self.secret_key = secret_key
+
+    def generate_hash(self, data):
+        """Generate a hash for the vector."""
+        return hmac.new(self.secret_key.encode(), data.encode(), hashlib.sha256).hexdigest()
+
+    def verify_hash(self, data, hash_value):
+        """Verify the hash of the vector."""
+        return hmac.compare_digest(self.generate_hash(data), hash_value)
+
+# Example Usage
+lock = ValveVectorLock("super_secret_key")
+vector_data = "critical_vector"
+vector_hash = lock.generate_hash(vector_data)
+
+if lock.verify_hash(vector_data, vector_hash):
+    print("Vector integrity verified.")
+else:
+    print("Vector tampering detected!")
