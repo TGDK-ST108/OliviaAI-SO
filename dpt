@@ -1,0 +1,8 @@
+from stem.control import Controller
+
+def connect_to_tor():
+    with Controller.from_port(port=9051) as controller:
+        controller.authenticate(password="your_password")
+        print("TOR connected on port 9050")
+
+connect_to_tor()
