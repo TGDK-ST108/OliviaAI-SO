@@ -1,0 +1,33 @@
+import math
+from stem.control import Controller
+
+# Define formulas as functions
+def custom_formula_1(x, y):
+    return (x + y) ** 2 / (math.sqrt(y) - 2)
+
+def custom_formula_2(z, k):
+    return (k ** 3 + z ** 2) / (2 * k - z)
+
+# Apply formulas dynamically
+def dynamic_tor_adjustments(controller, x, y, z, k):
+    f1 = custom_formula_1(x, y)
+    f2 = custom_formula_2(z, k)
+    # Log and use calculations
+    print(f"Dynamic adjustment formula 1 result: {f1}")
+    print(f"Dynamic adjustment formula 2 result: {f2}")
+    
+    # Example use-case: Adjust circuit lifespan dynamically
+    controller.set_conf('MaxCircuitDirtiness', str(int(f1)))
+
+def connect_to_tor():
+    with Controller.from_port(port=9051) as controller:
+        controller.authenticate(password="your_password")
+        print("TOR connected on port 9050")
+
+        # Example variables for formulas
+        x, y, z, k = 3.5, 8, 7, 4
+
+        # Perform dynamic adjustments
+        dynamic_tor_adjustments(controller, x, y, z, k)
+
+connect_to_tor()
