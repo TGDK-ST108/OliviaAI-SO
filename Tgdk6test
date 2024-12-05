@@ -1,0 +1,29 @@
+import time
+import requests
+import random
+
+# Define network parameters
+LATENCY_THRESHOLD = 10  # in ms
+SPEED_THRESHOLD = 1000  # in Mbps
+TEST_ITERATIONS = 5
+
+# Function to simulate a network test
+def test_6g_network():
+    for i in range(TEST_ITERATIONS):
+        latency = random.uniform(5, 15)  # Simulated latency
+        speed = random.uniform(800, 1200)  # Simulated speed
+
+        print(f"Test {i+1}: Latency = {latency:.2f} ms, Speed = {speed:.2f} Mbps")
+
+        # Validate performance
+        if latency < LATENCY_THRESHOLD and speed > SPEED_THRESHOLD:
+            print("Test Passed!")
+        else:
+            print("Test Failed! Adjust Network Parameters.")
+
+        time.sleep(2)  # Simulate time between tests
+
+# Run the test
+if __name__ == "__main__":
+    print("Starting 6G Network Test...")
+    test_6g_network()
