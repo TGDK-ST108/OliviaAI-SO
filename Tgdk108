@@ -1,0 +1,65 @@
+import requests
+import pandas as pd
+import matplotlib.pyplot as plt
+
+class TGDKpolitical:
+    def __init__(self):
+        self.data_sources = []
+
+    def add_data_source(self, source_url):
+        """Add a data source for tracking political corruption."""
+        self.data_sources.append(source_url)
+
+    def fetch_data(self):
+        """Fetch and compile data from all sources."""
+        compiled_data = []
+        for source in self.data_sources:
+            try:
+                response = requests.get(source)
+                if response.status_code == 200:
+                    compiled_data.append(response.json())
+            except Exception as e:
+                print(f"Failed to fetch data from {source}: {e}")
+        return compiled_data
+
+    def analyze_data(self, data):
+        """Analyze data for corruption indicators."""
+        # Placeholder for analysis logic
+        corruption_scores = []
+        for record in data:
+            score = self.calculate_corruption_score(record)
+            corruption_scores.append({"entity": record.get("entity"), "score": score})
+        return corruption_scores
+
+    def calculate_corruption_score(self, record):
+        """Calculate a corruption score for a given record."""
+        # Example scoring logic
+        score = 0
+        if record.get("unusual_spending"):
+            score += 50
+        if record.get("unaccounted_funds"):
+            score += 30
+        if record.get("connections_to_corrupt_officials"):
+            score += 20
+        return score
+
+    def generate_report(self, scores):
+        """Generate a graphical report of corruption scores."""
+        entities = [item['entity'] for item in scores]
+        corruption_scores = [item['score'] for item in scores]
+
+        plt.figure(figsize=(10, 6))
+        plt.bar(entities, corruption_scores, color="red")
+        plt.xlabel("Entities")
+        plt.ylabel("Corruption Score")
+        plt.title("Political Corruption Analysis")
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.show()
+
+# Example usage
+tgdkpolitical = TGDKpolitical()
+tgdkpolitical.add_data_source("https://example.com/political_data")
+data = tgdkpolitical.fetch_data()
+analysis = tgdkpolitical.analyze_data(data)
+tgdkpolitical.generate_report(analysis)
