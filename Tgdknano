@@ -1,0 +1,98 @@
+class TGDKNanoparticleLab:
+    def __init__(self):
+        self.nanoparticles = []
+        self.properties = []
+
+    def synthesize_nanoparticle(self, size, shape, material):
+        """Simulates the synthesis of a nanoparticle."""
+        nanoparticle = {
+            "size": size,
+            "shape": shape,
+            "material": material,
+            "reactivity": self.calculate_reactivity(size, shape, material),
+        }
+        self.nanoparticles.append(nanoparticle)
+        return nanoparticle
+
+    def calculate_reactivity(self, size, shape, material):
+        """Calculates the reactivity of a nanoparticle."""
+        # Simplified formula for demonstration
+        return size * len(shape) * hash(material) % 100
+
+    def visualize_nanoparticles(self):
+        """Generates 3D visualizations for nanoparticles."""
+        import matplotlib.pyplot as plt
+        from mpl_toolkits.mplot3d import Axes3D
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+
+        for nanoparticle in self.nanoparticles:
+            ax.scatter(
+                nanoparticle["sizeax.scatter(
+                    nanoparticle["size"],
+                    len(nanoparticle["shape"]),
+                    hash(nanoparticle["material"]) % 50,
+                    label=f'{nanoparticle["material"]}',
+                )
+        
+        ax.set_title("3D Visualization of Nanoparticles")
+        ax.set_xlabel("Size")
+        ax.set_ylabel("Shape Complexity")
+        ax.set_zlabel("Material Reactivity")
+        plt.legend()
+        plt.show()
+
+    def analyze_properties(self):
+        """Analyzes and returns properties of all synthesized nanoparticles."""
+        self.properties = [
+            {
+                "size": nanoparticle["size"],
+                "shape": nanoparticle["shape"],
+                "material": nanoparticle["material"],
+                "reactivity": nanoparticle["reactivity"],
+            }
+            for nanoparticle in self.nanoparticles
+        ]
+        return self.properties
+
+
+# Extending TGDKexpo to incorporate NanoparticleLab
+class TGDKexpo:
+    def __init__(self):
+        self.nano_lab = TGDKNanoparticleLab()
+        self.expo_data = []
+
+    def integrate_nano_lab(self, size, shape, material):
+        """Integrates synthesized nanoparticles into the expo."""
+        nanoparticle = self.nano_lab.synthesize_nanoparticle(size, shape, material)
+        self.expo_data.append(nanoparticle)
+        return nanoparticle
+
+    def visualize_expo_data(self):
+        """Visualizes all data, including nanoparticle details."""
+        self.nano_lab.visualize_nanoparticles()
+
+    def export_data(self, filename="tgdkexpo_nanoparticles.json"):
+        """Exports nanoparticle data to a file."""
+        import json
+        with open(filename, "w") as file:
+            json.dump(self.expo_data, file, indent=4)
+        print(f"Data exported to {filename}")
+
+
+# Example Usage
+if __name__ == "__main__":
+    # Initialize TGDKexpo with NanoparticleLab
+    tgdk_expo = TGDKexpo()
+
+    # Synthesize and integrate nanoparticles
+    tgdk_expo.integrate_nano_lab(size=5, shape="sphere", material="gold")
+    tgdk_expo.integrate_nano_lab(size=10, shape="cube", material="silver")
+    tgdk_expo.integrate_nano_lab(size=7, shape="rod", material="platinum")
+
+    # Visualize data
+    tgdk_expo.visualize_expo_data()
+
+    # Export data
+    tgdk_expo.export_data()
