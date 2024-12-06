@@ -1,0 +1,19 @@
+class TGDKexpo:
+    def __init__(self):
+        self.assets = []
+
+    def visualize_height_map(self, height_map_file):
+        """Visualize height map using holography or AR."""
+        print(f"Visualizing height map: {height_map_file}")
+        # Pass to AR/VR system for visualization
+        self.assets.append(height_map_file)
+
+    def integrate_with_cds(self, cds):
+        """Connect TGDKexpo to CentralDataSystem."""
+        height_map = cds.generate_height_map(planet_radius=300, filename="expo_map.png")
+        self.visualize_height_map(height_map)
+        cds.load_level("InteractiveLevel")
+
+# Example usage with CentralDataSystem
+expo = TGDKexpo()
+expo.integrate_with_cds(cds)
