@@ -1,0 +1,15 @@
+class SystemIntegrator:
+    def __init__(self, cds, expo):
+        self.cds = cds
+        self.expo = expo
+
+    def execute_pipeline(self, planet_radius):
+        """Complete pipeline from asset generation to visualization."""
+        height_map_file = self.cds.generate_height_map(planet_radius, "final_map.png")
+        self.expo.visualize_height_map(height_map_file)
+        self.cds.load_level("GeneratedLevel")
+        print("Pipeline executed successfully!")
+
+# Instantiate and execute
+integrator = SystemIntegrator(cds, expo)
+integrator.execute_pipeline(planet_radius=1000)
