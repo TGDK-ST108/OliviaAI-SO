@@ -1,0 +1,108 @@
+import hashlib
+import json
+import logging
+import os
+from cryptography.fernet import Fernet
+from typing import Dict, Any
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger("LaurelSecurity")
+
+class LaurelSecurity:
+    def __init__(self, encryption_key: str = None):
+        """
+        Initializes the LaurelSecurity class.
+        :param encryption_key: Encryption key for securing communications.
+        """
+        self.encryption_key = encryption_key or Fernet.generate_key()
+        self.fernet = Fernet(self.encryption_key)
+        self.agent_logs = {}
+
+    def encrypt_data(self, data: str) -> str:
+        """
+        Encrypts the given data.
+        :param data: Data to encrypt.
+        :return: Encrypted data as a string.
+        """
+        encrypted = self.fernet.encrypt(data.encode())
+        logger.info("Data encrypted successfully.")
+        return encrypted.decode()
+
+    def decrypt_data(self, encrypted_data: str) -> str:
+        """
+        Decrypts the given data.
+        :param encrypted_data: Encrypted data to decrypt.
+        :return: Decrypted data as a string.
+        """
+        decrypted = self.fernet.decrypt(encrypted_data.encode())
+        logger.info("Data decrypted successfully.")
+        return decrypted.decode()
+
+    def verify_data_integrity(self, data: str, hash_value: str) -> bool:
+        """
+        Verifies the integrity of the given data using its hash value.
+        :param data: Original data.
+        :param hash_value: Expected hash value.
+        :return: True if integrity is verified, False otherwise.
+        """
+        computed_hash = hashlib.sha256(data.encode()).hexdigest()
+        is_valid = computed_hash == hash_value
+        logger.info("Data integrity verification: %s", "Passed" if is_valid else "Failed")
+        return is_valid
+
+    def log_agent_activity(self, agent_id: str, activity: Dict[str, Any]):
+        """
+        Logs RL agent activity.
+        :param agent_id: Unique identifier for the agent.
+        :param activity: Activity details.
+        """
+        if agent_id not in self.agent_logs:
+            self.agent_logs[agent_id] = []
+        self.agent_logs[agent_id].append(activity)
+        logger.info("Logged activity for agent '%s'.", agent_id)
+
+    def detect_anomalies(self, activity: Dict[str, Any]) -> bool:
+        """
+        Detects anomalies in agent activity using predefined rules.
+        :param activity: Activity details.
+        :return: True if anomalies are detected, False otherwise.
+        """
+        # Example rule: flag activities with unusually high latency
+        if activity.get("latency", 0) > 1000:
+            logger.warning("Anomaly detected: High latency in activity.")
+            return True
+        return False
+
+    def save_logs(self, file_path: str):
+        """
+        Saves the agent logs to a file.
+        :param file_path: File path to save the logs.
+        """
+        with open(file_path, "w") as f:
+            json.dump(self.agent_logs, f, indent=4)
+        logger.info("Agent logs saved to '%s'.", file_path)
+
+# Example Usage
+if __name__ == "__main__":
+    # Initialize LaurelSecurity
+    laurel = LaurelSecurity()
+
+    # Encrypt and Decrypt Data
+    encrypted_message = laurel.encrypt_data("Secure communication with RL agent.")
+    decrypted_message = laurel.decrypt_data(encrypted_message)
+
+    # Verify Data Integrity
+    message_hash = hashlib.sha256(decrypted_message.encode()).hexdigest()
+    integrity_check = laurel.verify_data_integrity(decrypted_message, message_hash)
+
+    # Log Agent Activity
+    agent_id = "RLAgent001"
+    activity = {"action": "move_forward", "latency": 120, "reward": 10}
+    laurel.log_agent_activity(agent_id, activity)
+
+    # Detect Anomalies
+    anomaly_detected = laurel.detect_anomalies(activity)
+
+    # Save Logs
+    laurel.save_logs("agent_logs.json")
