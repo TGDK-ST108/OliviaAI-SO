@@ -1,0 +1,2 @@
+def input_filter(data):
+    return any(term in data.lower() for term in blacklist_terms)
