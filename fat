@@ -1,0 +1,7 @@
+from qiskit import QuantumCircuit, Aer, transpile
+from qiskit.circuit.library import RealAmplitudes
+from qiskit_machine_learning.algorithms.classifiers import VQC
+
+# Create a variational quantum circuit
+qc = RealAmplitudes(num_qubits=4, reps=3)
+vqc = VQC(quantum_instance=Aer.get_backend('qasm_simulator'), feature_map=qc)
