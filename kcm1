@@ -1,0 +1,1 @@
+kubectl autoscale deployment oliviaai-nodes --cpu-percent=70 --min=10 --max=50
