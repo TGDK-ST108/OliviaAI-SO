@@ -1,0 +1,9 @@
+from openai import Completion
+
+def generate_security_script(threat_data):
+    prompt = f"Create a script to block {threat_data['ip']} and reroute traffic securely."
+    response = Completion.create(model="code-davinci", prompt=prompt, max_tokens=100)
+    return response["choices"][0]["text"]
+
+threat = {"ip": "192.168.1.1"}
+print(generate_security_script(threat))
