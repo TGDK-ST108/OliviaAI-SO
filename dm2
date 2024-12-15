@@ -1,0 +1,10 @@
+import requests
+
+def share_threat_data(threat):
+    url = "https://tgdkexpo.com/api/threats"
+    headers = {"Authorization": "Bearer <your_token>"}
+    response = requests.post(url, json=threat, headers=headers)
+    return response.status_code
+
+threat = {"source": "Verizon", "action": "blocked", "timestamp": "2024-12-15T12:00:00Z"}
+print(share_threat_data(threat))
