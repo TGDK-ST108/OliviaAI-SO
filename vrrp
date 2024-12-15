@@ -1,0 +1,10 @@
+vrrp_instance VI_1 {
+    state BACKUP
+    interface eth0
+    virtual_router_id 51
+    priority 100
+    track_script {
+        check_oliviaai_status
+    }
+    notify_fail "/path/to/failover_script.sh"
+}
