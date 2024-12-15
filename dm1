@@ -1,0 +1,10 @@
+import requests
+
+def fetch_threat_data(api_key):
+    url = "https://otx.alienvault.com/api/v1/pulses/subscribed"
+    headers = {"X-OTX-API-KEY": api_key}
+    response = requests.get(url, headers=headers)
+    return response.json()
+
+threats = fetch_threat_data("<your_api_key>")
+print("Verizon-related threats:", [t for t in threats if "Verizon" in t['description']])
