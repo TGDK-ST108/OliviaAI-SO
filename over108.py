@@ -1,4 +1,4 @@
-class OverwatchMonitor:
+class GVTGDK108:
     def __init__(self):
         self.activity_logs = []
 
