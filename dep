@@ -1,0 +1,12 @@
+import requests
+
+def make_deposit(account_number, amount, auth_token):
+    url = "https://api.pnc.com/deposit"
+    headers = {"Authorization": f"Bearer {auth_token}"}
+    data = {
+        "account_number": account_number,
+        "amount": amount,
+        "description": "Automated Deposit"
+    }
+    response = requests.post(url, headers=headers, json=data)
+    return response.json()
