@@ -1,0 +1,59 @@
+import requests
+import hashlib
+import random
+import string
+import json
+
+# GitHub API Setup
+GITHUB_TOKEN = "your_github_token_here"
+GITHUB_ORG = "your_github_organization_here"
+API_BASE_URL = "https://api.github.com"
+
+# Function to generate a scrambled name
+def scramble_name(original_name):
+    random_seed = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+    scrambled = hashlib.sha256((original_name + random_seed).encode()).hexdigest()
+    return scrambled[:12]  # Truncate for brevity
+
+# Function to fetch repositories
+def fetch_repositories():
+    url = f"{API_BASE_URL}/orgs/{GITHUB_ORG}/repos"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code == 200:
+        return [repo['name'] for repo in response.json()]
+    else:
+        print(f"Error fetching repositories: {response.status_code}")
+        return []
+
+# Function to rename a repository
+def rename_repository(original_name, new_name):
+    url = f"{API_BASE_URL}/repos/{GITHUB_ORG}/{original_name}"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+    data = {"name": new_name}
+    response = requests.patch(url, headers=headers, json=data)
+    
+    if response.status_code == 200:
+        print(f"Renamed {original_name} to {new_name}")
+    else:
+        print(f"Error renaming {original_name}: {response.status_code}")
+
+# Main function to scramble all repositories
+def scramble_all_repositories():
+    repositories = fetch_repositories()
+    name_mapping = {}
+
+    for repo in repositories:
+        scrambled_name = scramble_name(repo)
+        rename_repository(repo, scrambled_name)
+        name_mapping[repo] = scrambled_name
+
+    # Save the name mapping securely
+    with open("name_mapping.json", "w") as file:
+        json.dump(name_mapping, file)
+    print("Repository renaming completed. Name mapping saved securely.")
+
+# Execute the script
+if __name__ == "__main__":
+    scramble_all_repositories()
