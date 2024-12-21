@@ -1,0 +1,9 @@
+const monitorTransactions = async () => {
+    const events = await contract.getPastEvents("Transfer", {
+        fromBlock: 0,
+        toBlock: "latest",
+    });
+    console.log("Transfer Events:", events);
+};
+
+monitorTransactions();
