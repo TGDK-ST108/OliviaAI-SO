@@ -1,0 +1,25 @@
+const addTokenToMetamask = async () => {
+    try {
+        const wasAdded = await window.ethereum.request({
+            method: "wallet_watchAsset",
+            params: {
+                type: "ERC20",
+                options: {
+                    address: "0xTokenContractAddress", // Replace with TGDK Token contract address
+                    symbol: "TGDK",
+                    decimals: 18,
+                },
+            },
+        });
+
+        if (wasAdded) {
+            console.log("TGDK Token added to Metamask successfully!");
+        } else {
+            console.log("User declined to add TGDK Token.");
+        }
+    } catch (error) {
+        console.error("Error adding TGDK Token to Metamask:", error);
+    }
+};
+
+addTokenToMetamask();
