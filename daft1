@@ -1,0 +1,3 @@
+constructor(uint256 initialSupply) {
+    _mint(msg.sender, initialSupply);
+}
