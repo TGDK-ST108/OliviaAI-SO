@@ -1,0 +1,9 @@
+const quantumAuditLog = async (txHash, userId) => {
+    const log = {
+        txHash,
+        userId,
+        timestamp: Date.now(),
+        farqitLayer: Math.floor(Math.random() * 13.333), // Assign Farqit layer
+    };
+    await azureMonitor.log(log);
+};
