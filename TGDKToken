@@ -1,0 +1,31 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+// Import OpenZeppelin's ERC-20 Standard Implementation
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract TGDKToken is ERC20, Ownable {
+    uint8 private _decimals;
+
+    constructor(string memory name, string memory symbol, uint8 decimals_, uint256 initialSupply) ERC20(name, symbol) {
+        _decimals = decimals_;
+        // Mint the initial supply to the owner's address
+        _mint(msg.sender, initialSupply * 10 ** decimals_);
+    }
+
+    // Override decimals function
+    function decimals() public view virtual override returns (uint8) {
+        return _decimals;
+    }
+
+    // Mint new tokens (Owner only)
+    function mint(address to, uint256 amount) public onlyOwner {
+        _mint(to, amount * 10 ** _decimals);
+    }
+
+    // Burn tokens (Owner only)
+    function burn(uint256 amount) public onlyOwner {
+        _burn(msg.sender, amount * 10 ** _decimals);
+    }
+}
