@@ -1,0 +1,11 @@
+const adjustRewards = async (marketCondition) => {
+    if (marketCondition === "highVolume") {
+        console.log("Increasing rewards for high trading volume.");
+        rewardAmount = 75; // Adjust reward
+    } else {
+        console.log("Reducing rewards due to low trading volume.");
+        rewardAmount = 25; // Adjust reward
+    }
+};
+
+adjustRewards("highVolume");
