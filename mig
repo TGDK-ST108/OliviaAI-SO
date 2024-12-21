@@ -1,0 +1,5 @@
+const TGDKToken = artifacts.require("TGDKToken");
+
+module.exports = function (deployer) {
+  deployer.deploy(TGDKToken, "TGDK Coin", "TGDK", 18, 1000000);
+};
