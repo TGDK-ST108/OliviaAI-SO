@@ -1,0 +1,5 @@
+function mint(address to, uint256 amount) external onlyOwner {
+    require(totalMinted + amount <= maxSupply, "Exceeds max supply");
+    _mint(to, amount);
+    totalMinted += amount;
+}
