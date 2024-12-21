@@ -1,0 +1,33 @@
+const Web3 = require('web3');
+const dotenv = require('dotenv');
+dotenv.config();
+
+const contractABI = [/* ABI JSON from compiled contract */];
+const contractAddress = "YOUR_CONTRACT_ADDRESS";
+const providerURL = process.env.PROVIDER_URL;
+
+const web3 = new Web3(new Web3.providers.HttpProvider(providerURL));
+const contract = new web3.eth.Contract(contractABI, contractAddress);
+
+module.exports = async function (context, req) {
+    try {
+        const { sender, amount, currency } = req.body;
+
+        // Call the smart contract method
+        const result = await contract.methods.receivePayment(currency).send({
+            from: sender,
+            value: web3.utils.toWei(amount.toString(), 'ether'),
+            gas: 2000000
+        });
+
+        context.res = {
+            status: 200,
+            body: `Payment successful: ${result.transactionHash}`
+        };
+    } catch (error) {
+        context.res = {
+            status: 500,
+            body: `Error: ${error.message}`
+        };
+    }
+};
