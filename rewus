@@ -1,0 +1,9 @@
+const rewardUser = async (userAddress, rewardAmount) => {
+    const tx = await contract.methods.transfer(userAddress, rewardAmount).send({
+        from: rewardPoolAddress,
+        gas: 2000000,
+    });
+    console.log(`Rewarded ${rewardAmount} TGDK Tokens to ${userAddress}`);
+};
+
+rewardUser("0xUserAddress", 50); // Reward 50 TGDK Tokens for marketplace activity
