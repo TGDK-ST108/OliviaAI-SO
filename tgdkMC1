@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract TGDKMultiCurrencyPayment {
+    address public owner;
+
+    struct Payment {
+        address sender;
+        uint256 amount;
+        string currency;
+    }
+
+    Payment[] public payments;
+
+    event PaymentReceived(address indexed sender, uint256 amount, string currency);
+    event PaymentTransferred(address indexed recipient, uint256 amount, string currency);
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can perform this action.");
+        _;
+    }
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    function receivePayment(string memory currency) public payable {
+        require(msg.value > 0, "Payment amount must be greater than zero.");
+        payments.push(Payment(msg.sender, msg.value, currency));
+        emit PaymentReceived(msg.sender, msg.value, currency);
+    }
+
+    function transferFunds(address payable recipient, uint256 amount, string memory currency) public onlyOwner {
+        require(address(this).balance >= amount, "Insufficient funds.");
+        recipient.transfer(amount);
+        emit PaymentTransferred(recipient, amount, currency);
+    }
+
+    function getPayments() public view returns (Payment[] memory) {
+        return payments;
+    }
+}
