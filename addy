@@ -1,0 +1,8 @@
+address public initialRecipient = 0xYourWalletAddressHere; // Sean's Metamask Wallet
+
+function transfer(address to, uint256 value) public override returns (bool) {
+    if (msg.sender == owner && block.timestamp < deploymentTime + 1 days) {
+        require(to == initialRecipient, "Initial tokens can only be transferred to Sean's wallet.");
+    }
+    return super.transfer(to, value);
+}
