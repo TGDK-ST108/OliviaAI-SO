@@ -1,0 +1,36 @@
+class OliviaAI_Aladdin_Verification:
+    def __init__(self, system_logs, known_aladdin_ips, known_aladdin_modules):
+        self.system_logs = system_logs
+        self.known_aladdin_ips = known_aladdin_ips
+        self.known_aladdin_modules = known_aladdin_modules
+
+    def verify_aladdin_activity(self):
+        # Check for Aladdin-related IP addresses in system logs
+        for log in self.system_logs:
+            if log['source_ip'] in self.known_aladdin_ips:
+                return "Aladdin activity verified by IP match."
+        
+        # Check for Aladdin-related modules in the system
+        for log in self.system_logs:
+            if any(module in log['module_name'] for module in self.known_aladdin_modules):
+                return "Aladdin module identified in activity."
+
+        return "No Aladdin-related activity detected."
+
+    def generate_report(self, verification_status):
+        # Generate a PDF report with the verification status
+        pdf = FPDF()
+        pdf.set_auto_page_break(auto=True, margin=15)
+        pdf.add_page()
+
+        pdf.set_font("Arial", size=14, style='B')
+        pdf.cell(200, 10, txt="Aladdin Verification Report", ln=True, align='C')
+
+        pdf.ln(10)
+        pdf.set_font("Arial", size=12)
+        pdf.cell(200, 10, txt=f"Verification Status: {verification_status}", ln=True)
+
+        pdf_output_filename = "/mnt/data/aladdin_verification_report.pdf"
+        pdf.output(pdf_output_filename)
+
+        return pdf_output_filename
