@@ -1,0 +1,60 @@
+from fpdf import FPDF
+from datetime import datetime
+
+class TGDKInvestigationFullReport:
+    def __init__(self, ip_address, fraud_detected, ip_to_entity, logs, optimized_logs, fraud_features):
+        self.ip_address = ip_address
+        self.fraud_detected = fraud_detected
+        self.ip_to_entity = ip_to_entity
+        self.logs = logs
+        self.optimized_logs = optimized_logs
+        self.fraud_features = fraud_features
+
+    def generate_pdf(self):
+        # Create PDF instance
+        pdf = FPDF()
+        pdf.set_auto_page_break(auto=True, margin=15)
+        pdf.add_page()
+
+        # Set title and headers
+        pdf.set_font("Arial", size=14, style='B')
+        pdf.cell(200, 10, txt=f"Full Investigation Report for IP: {self.ip_address}", ln=True, align='C')
+
+        # Add timestamp
+        pdf.ln(10)  # Line break
+        pdf.set_font("Arial", size=12)
+        pdf.cell(200, 10, txt=f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", ln=True)
+
+        # Add Fraud Detection Status
+        pdf.ln(10)
+        pdf.cell(200, 10, txt=f"Fraudulent Activity Detected: {'Yes' if self.fraud_detected else 'No'}", ln=True)
+
+        # Add IP to Entity Link
+        pdf.ln(10)
+        pdf.cell(200, 10, txt=f"Linked to Entity: {self.ip_to_entity}", ln=True)
+
+        # Add Quantum Optimization Results
+        pdf.ln(10)
+        pdf.cell(200, 10, txt="Quantum Optimization Results:", ln=True)
+        pdf.set_font("Arial", size=10)
+        for log in self.optimized_logs:
+            pdf.cell(200, 10, txt=log, ln=True)
+
+        # Add Fraud Detection Features
+        pdf.ln(10)
+        pdf.cell(200, 10, txt="Fraud Detection Features Mapped:", ln=True)
+        for feature in self.fraud_features:
+            pdf.cell(200, 10, txt=feature, ln=True)
+
+        # Add Logs related to IP
+        pdf.ln(10)
+        pdf.cell(200, 10, txt="Logs related to IP:", ln=True)
+        pdf.set_font("Arial", size=10)
+        for log in self.logs:
+            pdf.cell(200, 10, txt=log, ln=True)
+
+        # Save the PDF to a file
+        pdf_output_filename = "/mnt/data/tgdk_full_investigation_report.pdf"
+        pdf.output(pdf_output_filename)
+
+        # Return the file path for download
