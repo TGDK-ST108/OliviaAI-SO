@@ -1,0 +1,69 @@
+from quantum_sdk import QuantumOptimizer, QuantumFeatureMapper
+from tgdk_expo import TGDKExpo
+from steelox import Steelox
+from central_data_system import CentralDataSystem
+from fpdf import FPDF
+from datetime import datetime
+
+class TGDKInvestigation:
+    def __init__(self):
+        self.quantum_optimizer = QuantumOptimizer()
+        self.quantum_feature_mapper = QuantumFeatureMapper()
+        self.central_data_system = CentralDataSystem()
+        self.steelox = Steelox()
+        self.tgdk_expo = TGDKExpo()
+
+    def analyze_fraudulent_activity(self, ip_address):
+        # Step 1: Query logs from all systems (Steelox, TGDKExpo, CentralDataSystem)
+        steelox_logs = self.steelox.get_logs(ip_address)
+        tgdk_logs = self.tgdk_expo.get_logs(ip_address)
+        central_data_logs = self.central_data_system.get_logs(ip_address)
+        
+        # Step 2: Use Quantum Optimizer for anomaly detection
+        logs = steelox_logs + tgdk_logs + central_data_logs
+        optimized_logs = self.quantum_optimizer.optimize(logs)
+        
+        # Step 3: Apply Quantum Feature Mapper for fraud detection
+        fraud_detected = self.quantum_feature_mapper.detect_fraud(optimized_logs)
+        
+        # Step 4: Analyze IP links to names and entities (cross-referencing)
+        ip_to_entity = self.link_ip_to_entity(ip_address)
+        
+        # Step 5: Generate PDF report with results
+        self.generate_pdf_report(ip_address, fraud_detected, ip_to_entity)
+    
+    def link_ip_to_entity(self, ip_address):
+        # This method will cross-reference IP with known entities in the system
+        # Example: linking IP to names and entities in TGDK Expo and CentralDataSystem
+        ip_info = self.central_data_system.get_ip_info(ip_address)
+        return ip_info
+
+    def generate_pdf_report(self, ip_address, fraud_detected, ip_to_entity):
+        # Create PDF instance
+        pdf = FPDF()
+        pdf.set_auto_page_break(auto=True, margin=15)
+        pdf.add_page()
+
+        # Set title and headers
+        pdf.set_font("Arial", size=14, style='B')
+        pdf.cell(200, 10, txt="TGDK Investigation Report for IP: " + ip_address, ln=True, align='C')
+
+        # Add timestamp
+        pdf.ln(10)  # Line break
+        pdf.set_font("Arial", size=12)
+        pdf.cell(200, 10, txt="Timestamp: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"), ln=True)
+
+        # Add fraud detection result
+        pdf.ln(10)
+        pdf.cell(200, 10, txt=f"Fraudulent Activity Detected: {'Yes' if fraud_detected else 'No'}", ln=True)
+
+        # Add IP to entity link
+        pdf.ln(10)
+        pdf.cell(200, 10, txt=f"Linked to Entity: {ip_to_entity}", ln=True)
+
+        # Save the PDF to a file
+        pdf_output_filename = "/mnt/data/tgdk_investigation_report.pdf"
+        pdf.output(pdf_output_filename)
+
+        # Return the file path for download
+        return pdf_output_filename
