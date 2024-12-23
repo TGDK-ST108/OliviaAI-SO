@@ -1,0 +1,28 @@
+import json
+import geoip2.database
+
+AUTHORIZED_COUNTRIES = {'US', 'GB', 'JP', 'DE'}  # Authorized ISO country codes
+
+def lambda_handler(event, context):
+    ip_address = event['requestContext']['identity']['sourceIp']
+    geoip_path = '/opt/GeoLite2-Country.mmdb'  # Path to GeoIP database
+    
+    try:
+        with geoip2.database.Reader(geoip_path) as reader:
+            response = reader.country(ip_address)
+            country_code = response.country.iso_code
+            if country_code in AUTHORIZED_COUNTRIES:
+                return {
+                    'statusCode': 200,
+                    'body': json.dumps('Access Granted')
+                }
+            else:
+                return {
+                    'statusCode': 403,
+                    'body': json.dumps('Access Denied: Unauthorized Region')
+                }
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': json.dumps(f"Error: {str(e)}")
+        }
