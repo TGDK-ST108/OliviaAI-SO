@@ -1,0 +1,9 @@
+import requests
+
+def validate_address(address):
+    api_url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key=<API_KEY>"
+    response = requests.get(api_url).json()
+    if response['status'] == 'OK':
+        country = response['results'][0]['address_components'][-1]['short_name']
+        return country in ['US', 'GB', 'JP', 'DE']
+    return False
