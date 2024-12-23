@@ -1,0 +1,9 @@
+from geoip2.database import Reader
+
+def check_geolocation(ip_address):
+    with Reader('/path/to/GeoLite2-Country.mmdb') as reader:
+        response = reader.country(ip_address)
+        if response.country.iso_code in ['US', 'UK', 'JP', 'DE']:
+            return True
+        else:
+            return False
