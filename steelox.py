@@ -141,3 +141,21 @@ if __name__ == '__main__':
 
 author_id = "Sean Tichenor_20241003050411_TGDK_7a575871"
 version_id = "v1.20241003.7a5758_XYZLLC123456"
+
+class EnhancedSteelox:
+    def __init__(self, olivia_ai):
+        self.olivia_ai = olivia_ai
+
+    def detect_threats(self, system_data):
+        # Step 1: Use OliviaAI to detect anomalies
+        threats = self.olivia_ai.analyze("threat_detection", system_data)
+
+        # Step 2: Apply QLFC for containment
+        neutralized_threats = self.olivia_ai.apply_qlfc(threats)
+
+        return {"threats_detected": threats, "neutralized_threats": neutralized_threats}
+
+    def adjust_firewall(self, traffic_data):
+        # Dynamically adjust firewall settings
+        adjusted_firewall = self.olivia_ai.optimize("firewall_settings", traffic_data)
+        return adjusted_firewall
