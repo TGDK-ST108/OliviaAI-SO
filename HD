@@ -1,0 +1,18 @@
+class HabitatDesign:
+    def __init__(self, olivia_ai):
+        self.olivia_ai = olivia_ai
+
+    def design_architecture(self, mars_data):
+        # Generate architectural designs for Mars colonies
+        architecture = self.olivia_ai.generate("colony_architecture", mars_data)
+        return architecture
+
+    def create_ecosystem(self, ecosystem_data):
+        # Develop self-sustaining ecosystems
+        ecosystem = self.olivia_ai.simulate("ecosystem_design", ecosystem_data)
+        return ecosystem
+
+    def simulate_terraforming(self, environment_data):
+        # Run terraforming simulations
+        terraforming = self.olivia_ai.simulate("terraforming", environment_data)
+        return terraforming
