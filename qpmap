@@ -1,0 +1,24 @@
+// Initialize TGDKqmap
+const map = TGDKqmap.init({
+    container: 'map',
+    center: [20, 0],  // Latitude, Longitude
+    zoom: 2,
+});
+
+// Add a layer for seismic events
+map.addLayer({
+    type: 'circle',
+    source: 'https://api.olivia-tgdk.com/tgdkseismoapi/realtime-seismic',
+    options: {
+        color: 'red',
+        radius: event => event.magnitude * 2,  // Scale by magnitude
+        tooltip: event => `
+            Magnitude: ${event.magnitude}<br>
+            Depth: ${event.depth} km<br>
+            Region: ${event.region}
+        `,
+    },
+});
+
+// Render the map
+map.render();
