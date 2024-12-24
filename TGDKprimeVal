@@ -1,0 +1,46 @@
+import dns.resolver
+import subprocess
+from datetime import datetime
+import random  # Simulating predictive analysis
+
+class TGDKprime:
+    def __init__(self, domain, expected_ip, traffic_trend):
+        self.domain = domain
+        self.expected_ip = expected_ip
+        self.traffic_trend = traffic_trend  # Simulated trend data
+    
+    def validate_dns(self):
+        try:
+            # Resolve DNS
+            result = dns.resolver.resolve(self.domain, 'A')
+            resolved_ips = [ipval.to_text() for ipval in result]
+            if self.expected_ip in resolved_ips:
+                return f"[SUCCESS] DNS resolves correctly to {self.expected_ip}."
+            else:
+                return f"[FAILURE] DNS resolves to {resolved_ips}, expected {self.expected_ip}."
+        except Exception as e:
+            return f"[ERROR] DNS validation failed: {str(e)}"
+
+    def predict_anomalies(self):
+        # Simulate anomaly prediction based on random traffic spikes
+        anomaly_score = random.uniform(0, 1)  # Simulated score (0 to 1)
+        if anomaly_score > 0.7:
+            return f"[WARNING] High anomaly risk detected with score {anomaly_score:.2f}."
+        return f"[INFO] Low anomaly risk detected with score {anomaly_score:.2f}."
+
+    def log_results(self, validation_result, anomaly_result):
+        with open("tgdkprime_validation_logs.txt", "a") as log_file:
+            log_file.write(f"[{datetime.now()}] {validation_result} | {anomaly_result}\n")
+
+# Example Usage
+domain = "api.olivia-tgdk.com"
+expected_ip = "72.266.206.116"
+traffic_trend = {"average_requests": 1000, "peak_requests": 1500}  # Simulated trend data
+
+tgdkprime = TGDKprime(domain, expected_ip, traffic_trend)
+validation_result = tgdkprime.validate_dns()
+anomaly_result = tgdkprime.predict_anomalies()
+tgdkprime.log_results(validation_result, anomaly_result)
+
+print(validation_result)
+print(anomaly_result)
