@@ -1,0 +1,32 @@
+class Sequencer:
+    def __init__(self):
+        self.orb_position = [0, 0, 0]  # Initial position of the orb
+        self.orb_gravity_field = True  # Activates gravitational field for hovering
+        self.orb_size = 1.5  # Size of the orb
+        self.sequencer_position = [0, -5, 0]  # Position of the sequencer platform
+        self.oliviaAI_position = [0, 0, 0]  # Position of OliviaAI on the orb
+        self.hover_distance = 2.0  # Distance above the sequencer platform
+
+    def activate_gravity(self):
+        if self.orb_gravity_field:
+            self.orb_position[1] = self.sequencer_position[1] + self.hover_distance
+
+    def position_oliviaAI(self):
+        self.oliviaAI_position = [self.orb_position[0], self.orb_position[1] + 0.5, self.orb_position[2]]
+
+    def display(self):
+        print(f"Orb Position: {self.orb_position}")
+        print(f"OliviaAI Position: {self.oliviaAI_position}")
+        print(f"Sequencer Position: {self.sequencer_position}")
+
+    def update(self):
+        self.activate_gravity()
+        self.position_oliviaAI()
+        self.display()
+
+
+# Create the Sequencer
+tgdk_sequencer = Sequencer()
+
+# Update the Sequencer for visual output
+tgdk_sequencer.update()
