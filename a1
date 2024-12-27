@@ -1,0 +1,32 @@
+from azure.quantum import Workspace
+from azure.quantum.qiskit import AzureQuantumProvider
+from qiskit import QuantumCircuit, transpile, Aer
+
+# Set up Azure Quantum workspace
+workspace = Workspace(
+    subscription_id="your_subscription_id",
+    resource_group="your_resource_group",
+    name="your_workspace_name",
+    location="your_location"
+)
+
+# Load Azure Quantum Provider
+provider = AzureQuantumProvider(workspace=workspace)
+
+# Create a quantum circuit for entanglement
+qc = QuantumCircuit(2)
+qc.h(0)  # Apply Hadamard gate
+qc.cx(0, 1)  # Apply CNOT gate
+qc.measure_all()
+
+# Transpile for the backend
+backend = provider.get_backend("ionq.simulator")
+transpiled_qc = transpile(qc, backend)
+
+# Submit job
+job = backend.run(transpiled_qc)
+print(f"Job ID: {job.id()}")
+
+# Monitor job
+result = job.result()
+print(f"Result: {result.get_counts()}")
