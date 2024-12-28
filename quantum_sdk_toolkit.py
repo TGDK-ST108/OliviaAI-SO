@@ -141,6 +141,14 @@ class Quadroqit:
             "Fluxqit": self.base_value * 0.4,
         }
 
+    def calculate_efficiency(self, task_complexity):
+        """
+        Calculate the efficiency of processing based on task complexity.
+        :param task_complexity: The complexity of the task (arbitrary units).
+        :return: Computed efficiency score.
+        """
+        efficiency = self.base_value / (task_complexity + 1)
+        return efficiency
 
 class NQVGRF:
     def __init__(self, quadroqit):
