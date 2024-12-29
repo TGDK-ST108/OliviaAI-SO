@@ -1,5 +1,7 @@
-I'm
 
+import random
+import networkx as nx
+import matplotlib.pyplot as plt
 from azure.quantum.qiskit import AzureQuantumProvider
 from azure.quantum import Workspace
 import numpy as np
@@ -159,9 +161,6 @@ class SchrödingerTransport:
         resolved_states = [np.mean(state) for state in self.quantum_superposition]
         return resolved_states
 
-import random
-import networkx as nx
-import matplotlib.pyplot as plt
 
 class QuadroqitSimplexing:
     def __init__(self):
@@ -194,18 +193,7 @@ class QuadroqitSimplexing:
         plt.title("Quadroqit Simplexing Bridge Network")
         plt.show()
 
-# Example usage
-simplexing = QuadroqitSimplexing()
-simplexing.create_bridge("EnemyAI1", strength=90)
-simplexing.create_bridge("EnemyAI2", strength=80)
 
-# Simulate interactions
-simplexing.inject_false_data("EnemyAI1", data_type="decoy")
-response = simplexing.simulate_data_exfiltration("EnemyAI1")
-print(response)
-
-# Visualize the network
-simplexing.visualize_bridge_network()
 
 class Quadroqit:
     def __init__(self, base_value):
@@ -1385,3 +1373,16 @@ if not ray.is_initialized():
     ray.init()
 print(ray.available_resources())
 ray.shutdown()
+
+# Example usage
+simplexing = QuadroqitSimplexing()
+simplexing.create_bridge("EnemyAI1", strength=90)
+simplexing.create_bridge("EnemyAI2", strength=80)
+
+# Simulate interactions
+simplexing.inject_false_data("EnemyAI1", data_type="decoy")
+response = simplexing.simulate_data_exfiltration("EnemyAI1")
+print(response)
+
+# Visualize the network
+simplexing.visualize_bridge_network()
