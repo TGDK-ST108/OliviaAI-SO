@@ -45,6 +45,8 @@ from tgdk_modules import TGDKCARTOGRAPHER, TGDKprime, GoldenVajra
 from memory_flow import Figure8MemoryAllocator
 from schrodinger_transport import 
 from distributed_processing import DistributedTaskManager
+from concurrent.futures import ThreadPoolExecute
+import threading 
 
 # Initialize Ray for distributed processing
 ray.init(num_cpus=4)
@@ -228,6 +230,7 @@ try:
 except FileNotFoundError:
     print("Dataset file not found for encryption.")
 
+
 class VolumetricInfinitizer:
     def __init__(self, dimensions, max_qubits=16):
         self.dimensions = dimensions
@@ -237,7 +240,7 @@ class VolumetricInfinitizer:
     def encode_volumetric_data(self, data):
         """Encode data into quantum states."""
         for idx, value in enumerate(data):
-            self.circuit.initialize([value, 1-value], idx % self.max_qubits)
+            self.circuit.initialize([value, 1 - value], idx % self.max_qubits)
 
     def apply_entanglement(self):
         """Apply dynamic entanglement for volumetric synchronization."""
@@ -251,11 +254,31 @@ class VolumetricInfinitizer:
             self.circuit.barrier()
             self.circuit.x(0)
 
-    def simulate(self):
-        """Simulate the quantum volumetric operations."""
-        simulator = Aer.get_backend('statevector_simulator')
+    def gpu_simulation(self):
+        """Simulate on a GPU-accelerated backend."""
+        simulator = AerSimulator(method='statevector_gpu')
         result = execute(self.circuit, simulator).result()
         return result.get_statevector()
+
+    def threaded_simulation(self):
+        """Run simulation in parallel threads."""
+        threads = []
+        results = []
+
+        def run_simulation():
+            simulator = Aer.get_backend('statevector_simulator')
+            result = execute(self.circuit, simulator).result()
+            results.append(result.get_statevector())
+
+        for _ in range(4):  # Run in 4 parallel threads
+            thread = threading.Thread(target=run_simulation)
+            threads.append(thread)
+            thread.start()
+
+        for thread in threads:
+            thread.join()
+
+        return results
 
 class Figure8Memory:
     def __init__(self, memory_size, max_qubits=8):
@@ -266,7 +289,7 @@ class Figure8Memory:
     def encode_memory(self, memory_blocks):
         """Encode memory blocks in a figure-8 quantum memory."""
         for idx, value in enumerate(memory_blocks):
-            self.circuit.initialize([value, 1-value], idx % self.max_qubits)
+            self.circuit.initialize([value, 1 - value], idx % self.max_qubits)
 
     def fold_memory(self):
         """Apply Jovian-inspired folding to compress memory."""
@@ -279,25 +302,30 @@ class Figure8Memory:
         for _ in range(factor):
             self.circuit.t(0)
 
-    def simulate(self):
-        """Simulate the quantum figure-8 memory operations."""
-        simulator = Aer.get_backend('statevector_simulator')
+    def gpu_simulation(self):
+        """Simulate on a GPU-accelerated backend."""
+        simulator = AerSimulator(method='statevector_gpu')
         result = execute(self.circuit, simulator).result()
         return result.get_statevector()
 
-# Usage
-figure8 = Figure8Memory(memory_size=4)
-figure8.encode_memory([0.9, 0.7, 0.5, 0.3])
-figure8.fold_memory()
-figure8.time_dilation(factor=3)
-print("Figure-8 Memory Output:", figure8.simulate())
+    def parallel_dilation(self, factors):
+        """Run time dilation in parallel using ThreadPoolExecutor."""
+        results = []
 
-# Usage
-infinitizer = VolumetricInfinitizer(dimensions=3)
-infinitizer.encode_volumetric_data([0.8, 0.6, 0.4])
-infinitizer.apply_entanglement()
-infinitizer.expand_volume(factor=4)
-print("Volumetric Data Output:", infinitizer.simulate())
+        def apply_dilation(factor):
+            for _ in range(factor):
+                self.circuit.t(0)
+            simulator = Aer.get_backend('statevector_simulator')
+            result = execute(self.circuit, simulator).result()
+            return result.get_statevector()
+
+        with ThreadPoolExecutor() as executor:
+            futures = [executor.submit(apply_dilation, factor) for factor in factors]
+            for future in futures:
+                results.append(future.result())
+
+        return results
+
 
 class UnifiedWorkflow:
     def __init__(self, key_path="config/ox_key.key", model_name="microsoft/OliviaAI"):
