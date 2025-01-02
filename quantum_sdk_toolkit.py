@@ -97,6 +97,54 @@ qit_selector = QITSelector()
 result = qit_selector.process_data(task_type="dynamic", dataset_size=1500, data="Quantum Data")
 print(result)
 
+class DuoOverstretching:
+    def __init__(self, prediction_model, buffer_size=10):
+        self.model = prediction_model
+        self.buffer_size = buffer_size
+        self.primary_stretch = []
+        self.secondary_stretch = []
+
+    def generate_stretch(self, current_data):
+        # Generate future sequences
+        primary = self.model.predict(current_data, mode="primary")
+        secondary = self.model.predict(current_data, mode="secondary")
+
+        # Store sequences in buffer
+        if len(self.primary_stretch) >= self.buffer_size:
+            self.primary_stretch.pop(0)
+        if len(self.secondary_stretch) >= self.buffer_size:
+            self.secondary_stretch.pop(0)
+
+        self.primary_stretch.append(primary)
+        self.secondary_stretch.append(secondary)
+
+        return primary, secondary
+
+    def get_future_sequences(self):
+        # Retrieve current future projections
+        return self.primary_stretch[-1], self.secondary_stretch[-1]
+
+class TriplanarWithOverstretch:
+    def __init__(self, spatial, contextual, temporal, duo_overstretch, device_manager):
+        self.spatial = spatial
+        self.contextual = contextual
+        self.temporal = temporal
+        self.duo_overstretch = duo_overstretch
+        self.device_manager = device_manager
+
+    def process_data(self, current_data):
+        # Generate future sequences
+        primary, secondary = self.duo_overstretch.generate_stretch(current_data)
+
+        # Process current data
+        spatial_data = self.spatial.get_position()
+        contextual_data = self.contextual.get_context()
+        self.temporal.sync_time()
+
+        # Broadcast future predictions to devices
+        for device_name, device in self.device_manager.devices.items():
+            device.receive_future_data(primary, secondary)
+
 class DeviceManager:
     def __init__(self):
         self.devices = {}
