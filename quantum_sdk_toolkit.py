@@ -50,6 +50,134 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+class QITSelector:
+    def __init__(self):
+        self.methods = {
+            "FluxQIT": self.run_fluxqit,
+            "FlexQIT": self.run_flexqit,
+            "MoqIT": self.run_moqit,
+            "MiqIT": self.run_miqit
+        }
+    
+    def choose_method(self, task_type, dataset_size):
+        # Decision logic
+        if task_type == "dynamic" and dataset_size > 1000:
+            return "FluxQIT"
+        elif task_type == "flexible" and dataset_size <= 1000:
+            return "FlexQIT"
+        elif task_type == "molecular":
+            return "MoqIT"
+        elif task_type == "micro":
+            return "MiqIT"
+        else:
+            raise ValueError("No suitable QIT method found.")
+    
+    def run_fluxqit(self, data):
+        # Placeholder for FluxQIT processing
+        return f"Processing with FluxQIT: {data}"
+    
+    def run_flexqit(self, data):
+        # Placeholder for FlexQIT processing
+        return f"Processing with FlexQIT: {data}"
+    
+    def run_moqit(self, data):
+        # Placeholder for MoqIT processing
+        return f"Processing with MoqIT: {data}"
+    
+    def run_miqit(self, data):
+        # Placeholder for MiqIT processing
+        return f"Processing with MiqIT: {data}"
+    
+    def process_data(self, task_type, dataset_size, data):
+        method = self.choose_method(task_type, dataset_size)
+        return self.methods[method](data)
+
+# Example Usage
+qit_selector = QITSelector()
+result = qit_selector.process_data(task_type="dynamic", dataset_size=1500, data="Quantum Data")
+print(result)
+
+class EnhancedQuantumOptimizer:
+    def __init__(self):
+        self.qit_selector = QITSelector()
+    
+    def optimize(self, task_type, dataset_size, circuit):
+        # Select QIT method dynamically
+        method = self.qit_selector.choose_method(task_type, dataset_size)
+        print(f"Using {method} for optimization.")
+        
+        # Apply optimization based on method
+        if method == "FluxQIT":
+            return self.apply_fluxqit_optimization(circuit)
+        elif method == "FlexQIT":
+            return self.apply_flexqit_optimization(circuit)
+        elif method == "MoqIT":
+            return self.apply_moqit_optimization(circuit)
+        elif method == "MiqIT":
+            return self.apply_miqit_optimization(circuit)
+    
+    def apply_fluxqit_optimization(self, circuit):
+        # Apply flux-based optimizations
+        for qubit in range(circuit.num_qubits):
+            circuit.rx(np.pi / 4, qubit)
+        return circuit
+    
+    def apply_flexqit_optimization(self, circuit):
+        # Apply flexible gate manipulations
+        circuit.cx(0, 1)
+        return circuit
+    
+    def apply_moqit_optimization(self, circuit):
+        # Apply molecular-level optimizations
+        circuit.u3(np.pi / 4, np.pi / 6, np.pi / 8, 0)
+        return circuit
+    
+    def apply_miqit_optimization(self, circuit):
+        # Apply lightweight optimizations
+        circuit.h(0)
+        return circuit
+
+# Example Usage
+optimizer = EnhancedQuantumOptimizer()
+optimized_circuit = optimizer.optimize(task_type="flexible", dataset_size=500, circuit=QuantumCircuit(2))
+print(optimized_circuit)
+
+class EnhancedQuantumQuantifier:
+    def __init__(self):
+        self.qit_selector = QITSelector()
+    
+    def quantify(self, task_type, dataset_size, statevector):
+        # Select QIT method dynamically
+        method = self.qit_selector.choose_method(task_type, dataset_size)
+        print(f"Using {method} for quantification.")
+        
+        # Apply quantification based on method
+        if method == "FluxQIT":
+            return self.fluxqit_quantification(statevector)
+        elif method == "FlexQIT":
+            return self.flexqit_quantification(statevector)
+        elif method == "MoqIT":
+            return self.moqit_quantification(statevector)
+        elif method == "MiqIT":
+            return self.miqit_quantification(statevector)
+    
+    def fluxqit_quantification(self, statevector):
+        return np.abs(statevector)**2  # High precision
+    
+    def flexqit_quantification(self, statevector):
+        return [np.round(np.abs(s)**2, 2) for s in statevector]  # Flexible precision
+    
+    def moqit_quantification(self, statevector):
+        return [np.abs(s)**2 for s in statevector if np.abs(s) > 0.1]  # Molecular-level
+    
+    def miqit_quantification(self, statevector):
+        return np.round(np.abs(statevector)**2, 1)  # Lightweight approximation
+
+# Example Usage
+quantifier = EnhancedQuantumQuantifier()
+quantified_states = quantifier.quantify(task_type="molecular", dataset_size=800, statevector=quantum_result)
+print("Quantified States:", quantified_states)
+
 class QuantumNucleoLevitation:
     def __init__(self, field_strength=0.05, miqits_enabled=True):
         """
