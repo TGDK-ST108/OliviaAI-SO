@@ -1,0 +1,25 @@
+class OliviaAI:
+    def __init__(self):
+        self.qit_selector = QITSelector()
+        self.optimizer = EnhancedQuantumOptimizer()
+        self.quantifier = EnhancedQuantumQuantifier()
+    
+    def process_task(self, task_type, dataset_size, circuit, statevector):
+        # Step 1: Optimize the quantum circuit
+        optimized_circuit = self.optimizer.optimize(task_type, dataset_size, circuit)
+        
+        # Step 2: Quantify quantum states
+        quantified_states = self.quantifier.quantify(task_type, dataset_size, statevector)
+        
+        return optimized_circuit, quantified_states
+
+# Example Usage
+olivia_ai = OliviaAI()
+optimized_circuit, quantified_states = olivia_ai.process_task(
+    task_type="flexible", 
+    dataset_size=500, 
+    circuit=QuantumCircuit(3), 
+    statevector=quantum_result
+)
+print("Optimized Circuit:", optimized_circuit)
+print("Quantified States:", quantified_states)
