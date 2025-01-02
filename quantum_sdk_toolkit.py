@@ -97,6 +97,22 @@ qit_selector = QITSelector()
 result = qit_selector.process_data(task_type="dynamic", dataset_size=1500, data="Quantum Data")
 print(result)
 
+class DeviceManager:
+    def __init__(self):
+        self.devices = {}
+
+    def register_device(self, name, device):
+        self.devices[name] = device
+
+    def get_device(self, name):
+        return self.devices.get(name)
+
+# Example: Registering Devices
+device_manager = DeviceManager()
+device_manager.register_device("Sword", SwordDevice())
+device_manager.register_device("Oakleys", OakleysDevice())
+device_manager.register_device("Jacket", JacketDevice())
+
 class EnhancedQuantumOptimizer:
     def __init__(self):
         self.qit_selector = QITSelector()
