@@ -1,4 +1,3 @@
-nouse
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -65,6 +64,46 @@ class QuantumNode:
             "processing_capacity": self.processing_capacity,
             "current_load": self.current_load,
         }
+
+class ResolutionDataHandler:
+    def __init__(self, resolutions):
+        self.resolutions = resolutions
+        self.data_streams = {res: [] for res in resolutions}
+    
+    def add_data(self, resolution, data):
+        if resolution in self.data_streams:
+            self.data_streams[resolution].append(data)
+    
+    def get_data(self, resolution):
+        return self.data_streams.get(resolution, [])
+
+class QuantumResolutionProcessor:
+    def __init__(self):
+        self.qit_selector = QITSelector()
+    
+    def process_resolution(self, resolution, data):
+        if resolution <= 1080:
+            method = "MiqIT"
+        elif resolution <= 1440:
+            method = "FlexQIT"
+        elif resolution <= 4_000:
+            method = "FluxQIT"
+        elif resolution <= 8_000:
+            method = "MoqIT"
+        else:
+            raise ValueError("Unsupported resolution for processing.")
+        
+        processed_data = self.qit_selector.process_data(task_type="dynamic", dataset_size=len(data), data=data)
+        return processed_data
+
+class SnellFluxOptimizer:
+    def __init__(self):
+        self.flux_values = []
+
+    def optimize_flux(self, data, flux_level):
+        optimized_flux = [value * flux_level for value in data]
+        self.flux_values.append(optimized_flux)
+        return optimized_flux
 
 class TriplanarWithSimplexor:
     def __init__(self, spatial, contextual, temporal, duo_overstretch, quantum_node_manager):
