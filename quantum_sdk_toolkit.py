@@ -228,6 +228,30 @@ class DuoOverstretching:
         # Retrieve current future projections
         return self.primary_stretch[-1], self.secondary_stretch[-1]
 
+class AutonomousRelaySystem:
+    def __init__(self):
+        self.qit_selector = QITSelector()
+        self.sensor_data = {}
+        self.energy_manager = MoqitEnergyManager()
+        self.communication_manager = FlowqitRelay()
+
+    def process_sensor_data(self, data):
+        # Use Miqits for micro-level processing
+        processed_data = self.qit_selector.process_data(
+            task_type="micro", dataset_size=len(data), data=data
+        )
+        return processed_data
+
+    def optimize_energy(self):
+        # Use Moqits for energy optimization
+        optimized_energy = self.energy_manager.optimize()
+        return optimized_energy
+
+    def relay_data(self, data):
+        # Use Flowqits for real-time data relay
+        relayed_data = self.communication_manager.relay(data)
+        return relayed_data
+
 class TriplanarWithOverstretch:
     def __init__(self, spatial, contextual, temporal, duo_overstretch, device_manager):
         self.spatial = spatial
