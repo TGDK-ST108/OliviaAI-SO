@@ -29,6 +29,11 @@ from qiskit.transpiler.exceptions import TranspilerError
 import tensorflow as tf
 from dwave.system import LeapHybridSampler
 import dimod  # D-Wave's binary quadratic model solver
+import pennylane as qml
+import tensorflow as tf
+import tensorflow_quantum as tfq
+import cirq
+import sympy
 
 
 
@@ -67,6 +72,92 @@ class QuantumNode:
             "processing_capacity": self.processing_capacity,
             "current_load": self.current_load,
         }
+
+
+
+class TFQuantumAnnealer:
+    """Quantum Annealing using TensorFlow Quantum"""
+
+    def __init__(self):
+        self.qubits = [cirq.GridQubit(0, i) for i in range(5)]
+
+    def build_circuit(self, params):
+        """Creates a variational quantum circuit"""
+        circuit = cirq.Circuit()
+        for i, qubit in enumerate(self.qubits):
+            circuit.append(cirq.rx(params[i])(qubit))
+            if i < len(self.qubits) - 1:
+                circuit.append(cirq.CNOT(qubit, self.qubits[i + 1]))
+        return circuit
+
+    def optimize_power(self, power_levels):
+        """Optimizes power levels using TFQ"""
+        symbols = [sympy.Symbol(f"theta_{i}") for i in range(5)]
+        circuit = self.build_circuit(symbols)
+
+        # Convert to TensorFlow Quantum object
+        circuit_tensor = tfq.convert_to_tensor([circuit])
+
+        # Define a simple model
+        model = tf.keras.Sequential([
+            tf.keras.layers.Input(shape=(), dtype=tf.string),
+            tfq.layers.PQC(circuit, operators=cirq.Z(self.qubits[0]))
+        ])
+
+        power_levels = np.array(power_levels) / 100  # Normalize inputs
+        optimal_output = model.predict(circuit_tensor)
+        return optimal_output * 100  # Scale back
+
+# Example Usage:
+annealer = TFQuantumAnnealer()
+optimal_power = annealer.optimize_power([60, 70, 80, 90, 100])
+print(f"🤖 Optimal Power Level (TF Quantum): {optimal_power}")
+
+class QuantumAnnealerQAOA:
+    """Quantum Annealer using QAOA (Quantum Approximate Optimization Algorithm)"""
+
+    def __init__(self, wires=4):
+        self.dev = qml.device("default.qubit", wires=wires)
+
+    @qml.qnode(self.dev)
+    def circuit(self, angles):
+        """Applies QAOA optimization to find the best power configuration"""
+        for i in range(len(angles)):
+            qml.RX(angles[i], wires=i)
+            qml.CNOT(wires=[i, (i+1) % len(angles)])
+        return qml.expval(qml.PauliZ(0))
+
+    def optimize_power(self, power_levels):
+        """Uses QAOA to optimize CPU/GPU power distribution"""
+        angles = np.array(power_levels) / 100  # Normalize inputs
+        optimal_angles = self.circuit(angles)
+        return optimal_angles * 100  # Scale back to power range
+
+# Example Usage:
+annealer = QuantumAnnealerQAOA()
+optimal_power = annealer.optimize_power([60, 70, 80, 90, 100])
+print(f"⚛️ Optimal Power Level (QAOA): {optimal_power}")
+
+class SimulatedAnnealer:
+    """Classical Simulated Annealing for Power Optimization"""
+
+    def __init__(self, temperature=0.1, iterations=100):
+        self.temperature = temperature
+        self.iterations = iterations
+
+    def cost_function(self, power_levels):
+        """Objective function to optimize CPU/GPU power efficiency."""
+        return np.sum(np.square(power_levels - np.mean(power_levels)))
+
+    def optimize_power(self, power_levels):
+        """Applies Simulated Annealing to find optimal power distribution"""
+        result = minimize(self.cost_function, power_levels, method='Powell')
+        return result.x
+
+# Example Usage:
+annealer = SimulatedAnnealer()
+optimal_power = annealer.optimize_power(np.array([60, 70, 80, 90, 100]))
+print(f"🚀 Optimal Power Level (Simulated Annealing): {optimal_power}")
 
 class EnhancedQuantumOptimizer:
     def __init__(self):
