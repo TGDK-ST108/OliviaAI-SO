@@ -34,6 +34,16 @@ import tensorflow as tf
 import tensorflow_quantum as tfq
 import cirq
 import sympy
+import time
+import numpy as np
+import psutil
+import pennylane as qml
+import torch
+import torch.nn as nn
+import qiskit
+from qiskit_aer import Aer
+from scipy.optimize import minimize
+import hashlib
 
 
 
