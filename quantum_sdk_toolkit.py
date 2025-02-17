@@ -27,6 +27,7 @@ from qiskit.providers.options import Options
 import queue
 from qiskit.transpiler.exceptions import TranspilerError
 import tensorflow as tf
+from dwave.system import LeapHybridSampler
 
 
 load_dotenv()
@@ -65,6 +66,71 @@ class QuantumNode:
             "current_load": self.current_load,
         }
 
+
+import numpy as np
+import dimod  # D-Wave's binary quadratic model solver
+
+class TeraqitAnnealing:
+    def __init__(self, temperature=0.01, iterations=1000):
+        self.temperature = temperature  # Initial temperature
+        self.iterations = iterations  # Number of annealing iterations
+        self.sampler = LeapHybridSampler()  # D-Wave Hybrid Sampler
+
+    def simulated_annealing(self, cost_function, initial_state):
+        """
+        Applies a simulated quantum annealing method to optimize a function.
+        """
+        state = initial_state
+        for i in range(self.iterations):
+            new_state = state + np.random.normal(0, self.temperature, size=len(state))
+            energy_diff = cost_function(new_state) - cost_function(state)
+            
+            # Apply Metropolis criterion
+            if energy_diff < 0 or np.exp(-energy_diff / self.temperature) > np.random.rand():
+                state = new_state
+
+            # Adaptive temperature decay
+            self.temperature *= 0.99  
+
+        return state
+
+    def d_wave_annealing(self, qubo_matrix):
+        """
+        Uses D-Wave's hybrid quantum annealer to solve the QUBO problem.
+        """
+        response = self.sampler.sample_qubo(qubo_matrix)
+        return response.first.sample  # Returns the best solution found
+
+    def optimize_quantum_circuit(self, circuit):
+        """
+        Applies annealing-based optimizations to a Qiskit QuantumCircuit.
+        """
+        optimized_circuit = circuit.copy()
+        
+        # Use Simulated Annealing for gate placement optimization
+        def cost_function(params):
+            return np.sum(np.abs(np.fft.fft(params)))  # Fourier-based heuristic
+
+        initial_params = np.random.rand(optimized_circuit.num_qubits)
+        optimized_params = self.simulated_annealing(cost_function, initial_params)
+
+        for i, param in enumerate(optimized_params):
+            optimized_circuit.rx(param, i)
+
+        return optimized_circuit
+
+    def optimize_qubit_allocation(self, qubits, connectivity_graph):
+        """
+        Optimizes qubit allocation using quantum annealing to minimize gate depth.
+        """
+        qubo_matrix = {}
+        for q1 in qubits:
+            for q2 in qubits:
+                if q1 != q2 and (q1, q2) in connectivity_graph.edges:
+                    qubo_matrix[(q1, q2)] = -1  # Encourage strong connections
+
+        optimized_allocation = self.d_wave_annealing(qubo_matrix)
+        return optimized_allocation
 class ResolutionDataHandler:
     def __init__(self, resolutions):
         self.resolutions = resolutions
