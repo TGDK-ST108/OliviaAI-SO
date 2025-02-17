@@ -68,6 +68,47 @@ class QuantumNode:
             "current_load": self.current_load,
         }
 
+class EnhancedQuantumOptimizer:
+    def __init__(self):
+        self.qit_selector = QITSelector()
+        self.annealer = TeraqitAnnealing()
+
+    def optimize(self, task_type, dataset_size, circuit):
+        """
+        Dynamically selects QIT optimization method and integrates annealing.
+        """
+        method = self.qit_selector.choose_method(task_type, dataset_size)
+        print(f"Using {method} for optimization.")
+
+        # Apply TeraqitAnnealing in optimization step
+        optimized_circuit = self.annealer.optimize_quantum_circuit(circuit)
+
+        if method == "FluxQIT":
+            return self.apply_fluxqit_optimization(optimized_circuit)
+        elif method == "FlexQIT":
+            return self.apply_flexqit_optimization(optimized_circuit)
+        elif method == "MoqIT":
+            return self.apply_moqit_optimization(optimized_circuit)
+        elif method == "MiqIT":
+            return self.apply_miqit_optimization(optimized_circuit)
+
+    def apply_fluxqit_optimization(self, circuit):
+        for qubit in range(circuit.num_qubits):
+            circuit.rx(np.pi / 4, qubit)
+        return circuit
+
+    def apply_flexqit_optimization(self, circuit):
+        circuit.cx(0, 1)
+        return circuit
+
+    def apply_moqit_optimization(self, circuit):
+        circuit.u3(np.pi / 4, np.pi / 6, np.pi / 8, 0)
+        return circuit
+
+    def apply_miqit_optimization(self, circuit):
+        circuit.h(0)
+        return circuit
+
 class TeraqitAnnealing:
     def __init__(self, temperature=0.01, iterations=1000):
         self.temperature = temperature  # Initial temperature
