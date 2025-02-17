@@ -28,6 +28,8 @@ import queue
 from qiskit.transpiler.exceptions import TranspilerError
 import tensorflow as tf
 from dwave.system import LeapHybridSampler
+import dimod  # D-Wave's binary quadratic model solver
+
 
 
 load_dotenv()
@@ -65,10 +67,6 @@ class QuantumNode:
             "processing_capacity": self.processing_capacity,
             "current_load": self.current_load,
         }
-
-
-import numpy as np
-import dimod  # D-Wave's binary quadratic model solver
 
 class TeraqitAnnealing:
     def __init__(self, temperature=0.01, iterations=1000):
