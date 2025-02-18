@@ -44,8 +44,6 @@ import qiskit
 from qiskit_aer import Aer
 from scipy.optimize import minimize
 import hashlib
-
-import psutil
 from flask import Flask, jsonify
 from web3 import Web3
 import pyopencl as cl
