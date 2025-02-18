@@ -171,18 +171,6 @@ quantum_computation = QuantumComputation()
 quantum_storage = QuantumStorage()
 quantum_ai = QuantumAI()
 
-# **Quantum Execution Example**
-if __name__ == "__main__":
-    quantum_signal = "Quantum Data Stream"
-    secure_signal = quantum_security.entropy_cascade_encryption(quantum_signal)
-    optimized_signal = quantum_computation.phase_aligned_superposition_algorithm(secure_signal)
-    stored_signal = quantum_storage.quantum_encrypted_blockchain_processing(optimized_signal)
-    ai_optimized_signal = quantum_ai.self_optimizing_quantum_ai_kernel(stored_signal)
-    
-    print("🔐 Secure Signal:", secure_signal[:20])
-    print("🚀 Optimized Signal:", optimized_signal[:20])
-    print("📡 Stored Signal:", stored_signal[:20])
-    print("🤖 AI Enhanced Signal:", ai_optimized_signal[:20])
 
 
 # Quantum Error Correction - Tichenor Code
@@ -258,10 +246,6 @@ if __name__ == "__main__":
         print(f"💰 Wallet Balance: {eth_balance} ETH")
 
         time.sleep(5)
-
-
-
-
 
 class AQVPFirewall:
     """Advanced Quantum Verification Protection Firewall Using Teraqits"""
@@ -2540,3 +2524,15 @@ print(response)
 
 # Visualize the network
 simplexing.visualize_bridge_network()
+# **Quantum Execution Example**
+if __name__ == "__main__":
+    quantum_signal = "Quantum Data Stream"
+    secure_signal = quantum_security.entropy_cascade_encryption(quantum_signal)
+    optimized_signal = quantum_computation.phase_aligned_superposition_algorithm(secure_signal)
+    stored_signal = quantum_storage.quantum_encrypted_blockchain_processing(optimized_signal)
+    ai_optimized_signal = quantum_ai.self_optimizing_quantum_ai_kernel(stored_signal)
+    
+    print("🔐 Secure Signal:", secure_signal[:20])
+    print("🚀 Optimized Signal:", optimized_signal[:20])
+    print("📡 Stored Signal:", stored_signal[:20])
+    print("🤖 AI Enhanced Signal:", ai_optimized_signal[:20])
