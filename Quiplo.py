@@ -24,7 +24,158 @@ import quantum_computing_library as qcl
 from web3 import Web3
 from cryptography.fernet import Fernet
 from flask import Flask, request, jsonify
-from quantum_computing_library import quantum_optimize_investment, quantum_entropy_encrypt
+from quantum_computing_library import quantum_optimize_investment, quantum_entropy_encrypt, quantum_staking_optimizer
+
+# Initialize Flask App
+app = Flask(__name__)
+
+# Secure Blockchain Connection
+web3 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID"))
+
+# Secure Encryption for Investment Data
+secure_key = Fernet.generate_key()
+cipher_suite = Fernet(secure_key)
+
+# Investment & Rewards Database
+investment_db = {}
+user_accounts = {}
+staking_pools = {"nuclear": {}, "volcanic": {}, "hybrid": {}}
+
+# Paramita-Based Investment Factors
+PARAMITA_FACTORS = {
+    "Dana": 1.2,  
+    "Sila": 0.9,  
+    "Ksanti": 1.1,  
+    "Virya": 1.5,  
+    "Dhyana": 1.3,  
+    "Prajna": 0.8   
+}
+
+# Nuclear Fusion Staking Formula
+def nuclear_fusion_staking(amount, paramita_factors):
+    energy_multiplier = paramita_factors["Dana"] + paramita_factors["Dhyana"]
+    return amount * energy_multiplier - paramita_factors["Sila"]
+
+# Volcanic Fusion Staking Formula
+def volcanic_fusion_staking(amount, paramita_factors):
+    risk_factor = np.exp(-paramita_factors["Prajna"] * random.uniform(0.1, 1))
+    return (paramita_factors["Virya"] * amount) / (1 + risk_factor)
+
+# AI-Optimized Quantum Staking Formula
+def ai_optimized_staking(amount, paramita_factors):
+    nuclear_yield = nuclear_fusion_staking(amount, paramita_factors)
+    volcanic_yield = volcanic_fusion_staking(amount, paramita_factors)
+    optimized_yield = quantum_staking_optimizer(nuclear_yield, volcanic_yield)
+    return optimized_yield
+
+# Quantum AI Model for Staking Optimization
+class QuantumInvestmentModel(tf.keras.Model):
+    def __init__(self):
+        super(QuantumInvestmentModel, self).__init__()
+        self.dense1 = tf.keras.layers.Dense(64, activation='relu')
+        self.dense2 = tf.keras.layers.Dense(32, activation='relu')
+        self.output_layer = tf.keras.layers.Dense(1, activation='linear')
+
+    def call(self, inputs):
+        x = self.dense1(inputs)
+        x = self.dense2(x)
+        return self.output_layer(x)
+
+# Initialize AI Model
+investment_model = QuantumInvestmentModel()
+investment_model.compile(optimizer='adam', loss='mse')
+
+# API Routes
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.json
+    username = data["username"]
+    password = hashlib.sha3_512(data["password"].encode()).hexdigest()
+
+    if username in user_accounts:
+        return jsonify({"error": "User already exists!"}), 400
+
+    user_accounts[username] = {"password": password, "balance": 0.0}
+    return jsonify({"message": "User registered successfully!"}), 201
+
+@app.route("/stake", methods=["POST"])
+def stake():
+    data = request.json
+    username = data["username"]
+    amount = float(data["amount"])
+    pool_type = data["pool"]
+
+    if username not in user_accounts:
+        return jsonify({"error": "User not found!"}), 404
+
+    if pool_type not in staking_pools:
+        return jsonify({"error": "Invalid staking pool!"}), 400
+
+    if user_accounts[username]["balance"] < amount:
+        return jsonify({"error": "Insufficient funds!"}), 400
+
+    # Calculate staking rewards
+    if pool_type == "nuclear":
+        staking_reward = nuclear_fusion_staking(amount, PARAMITA_FACTORS)
+    elif pool_type == "volcanic":
+        staking_reward = volcanic_fusion_staking(amount, PARAMITA_FACTORS)
+    else:
+        staking_reward = ai_optimized_staking(amount, PARAMITA_FACTORS)
+
+    # Store in staking pool
+    staking_pools[pool_type][username] = {"amount": amount, "reward": staking_reward}
+    user_accounts[username]["balance"] -= amount
+
+    return jsonify({"message": f"Staked {amount} in {pool_type} pool!", "expected_reward": staking_reward}), 200
+
+@app.route("/unstake", methods=["POST"])
+def unstake():
+    data = request.json
+    username = data["username"]
+    pool_type = data["pool"]
+
+    if username not in staking_pools[pool_type]:
+        return jsonify({"error": "No active stake found!"}), 404
+
+    # Unstake and return funds + rewards
+    stake_data = staking_pools[pool_type].pop(username)
+    user_accounts[username]["balance"] += (stake_data["amount"] + stake_data["reward"])
+
+    return jsonify({"message": f"Unstaked from {pool_type} pool!", "total_return": stake_data["amount"] + stake_data["reward"]}), 200
+
+@app.route("/balance", methods=["GET"])
+def check_balance():
+    username = request.args.get("username")
+
+    if username not in user_accounts:
+        return jsonify({"error": "User not found!"}), 404
+
+    return jsonify({"username": username, "balance": user_accounts[username]["balance"]}), 200
+
+@app.route("/secure_transaction", methods=["POST"])
+def secure_transaction():
+    data = request.json
+    sender = data["sender"]
+    receiver = data["receiver"]
+    amount = float(data["amount"])
+
+    if sender not in user_accounts or receiver not in user_accounts:
+        return jsonify({"error": "User not found!"}), 404
+
+    if user_accounts[sender]["balance"] < amount:
+        return jsonify({"error": "Insufficient funds!"}), 400
+
+    encrypted_data = quantum_entropy_encrypt(f"{sender}->{receiver}:{amount}")
+    txn_hash = web3.sha3(text=encrypted_data)
+
+    user_accounts[sender]["balance"] -= amount
+    user_accounts[receiver]["balance"] += amount
+
+    return jsonify({"message": "Transaction successful!", "transaction_hash": txn_hash.hex()}), 200
+
+# Run Flask App
+if __name__ == "__main__":
+    app.run(debug=True)
 
 # Initialize Flask App
 app = Flask(__name__)
