@@ -21,11 +21,6 @@ from cryptography.hazmat.backends import default_backend
 from scipy.optimize import minimize
 import json
 import quantum_computing_library as qcl
-import time
-import random
-import numpy as np
-import tensorflow as tf
-import hashlib
 from web3 import Web3
 from cryptography.fernet import Fernet
 from flask import Flask, request, jsonify
