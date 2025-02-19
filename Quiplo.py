@@ -21,6 +21,180 @@ from cryptography.hazmat.backends import default_backend
 from scipy.optimize import minimize
 import json
 import quantum_computing_library as qcl
+import time
+import random
+import numpy as np
+import tensorflow as tf
+import hashlib
+from web3 import Web3
+from cryptography.fernet import Fernet
+from flask import Flask, request, jsonify
+from quantum_computing_library import quantum_optimize_investment, quantum_entropy_encrypt
+
+# Initialize Flask App
+app = Flask(__name__)
+
+# Secure Blockchain Connection
+web3 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID"))
+
+# Secure Encryption for Investment Data
+secure_key = Fernet.generate_key()
+cipher_suite = Fernet(secure_key)
+
+# Investment & Rewards Database
+investment_db = {}
+user_accounts = {}
+
+# Paramita-Based Investment Factors
+PARAMITA_FACTORS = {
+    "Dana": 1.2,  # Generosity multiplier for yield distribution
+    "Sila": 0.9,  # Ethical compliance factor
+    "Ksanti": 1.1,  # Patience factor for risk management
+    "Virya": 1.5,  # Effort in energy-based investments
+    "Dhyana": 1.3,  # Quantum forecasting for optimized returns
+    "Prajna": 0.8   # Wisdom-based risk suppression
+}
+
+# Volcanic Fusion Investment Formula
+def calculate_volcanic_yield(initial_investment, paramita_factors):
+    """
+    Calculates investment growth using a volcanic fusion model.
+    """
+    risk_factor = np.exp(-paramita_factors["Prajna"] * random.uniform(0.1, 1))
+    yield_growth = (paramita_factors["Virya"] * initial_investment) / (1 + risk_factor)
+    
+    return yield_growth
+
+# Nuclear Fusion-Based Investment Growth Formula
+def calculate_nuclear_yield(initial_investment, paramita_factors):
+    """
+    Uses Deuterium-Tritium (D-T) nuclear fusion model for investment growth.
+    """
+    energy_multiplier = paramita_factors["Dana"] + paramita_factors["Dhyana"]
+    nuclear_yield = initial_investment * energy_multiplier - paramita_factors["Sila"]
+    
+    return nuclear_yield
+
+# Quantum AI Model for Investment Optimization
+class QuantumInvestmentModel(tf.keras.Model):
+    def __init__(self):
+        super(QuantumInvestmentModel, self).__init__()
+        self.dense1 = tf.keras.layers.Dense(64, activation='relu')
+        self.dense2 = tf.keras.layers.Dense(32, activation='relu')
+        self.output_layer = tf.keras.layers.Dense(1, activation='linear')
+
+    def call(self, inputs):
+        x = self.dense1(inputs)
+        x = self.dense2(x)
+        return self.output_layer(x)
+
+# Initialize Quantum AI Model
+investment_model = QuantumInvestmentModel()
+investment_model.compile(optimizer='adam', loss='mse')
+
+# API Routes
+@app.route("/register", methods=["POST"])
+def register():
+    """
+    User registration with secure encrypted storage.
+    """
+    data = request.json
+    username = data["username"]
+    password = hashlib.sha3_512(data["password"].encode()).hexdigest()
+
+    if username in user_accounts:
+        return jsonify({"error": "User already exists!"}), 400
+
+    user_accounts[username] = {"password": password, "balance": 0.0}
+    return jsonify({"message": "User registered successfully!"}), 201
+
+@app.route("/invest", methods=["POST"])
+def invest():
+    """
+    Accepts investment and calculates rewards using nuclear & volcanic models.
+    """
+    data = request.json
+    username = data["username"]
+    amount = float(data["amount"])
+
+    if username not in user_accounts:
+        return jsonify({"error": "User not found!"}), 404
+
+    # Compute investment yield
+    nuclear_yield = calculate_nuclear_yield(amount, PARAMITA_FACTORS)
+    volcanic_yield = calculate_volcanic_yield(amount, PARAMITA_FACTORS)
+
+    # Store Investment Data
+    investment_id = hashlib.sha3_512(f"{username}{time.time()}".encode()).hexdigest()
+    investment_db[investment_id] = {
+        "user": username,
+        "amount": amount,
+        "nuclear_yield": nuclear_yield,
+        "volcanic_yield": volcanic_yield,
+        "total_yield": nuclear_yield + volcanic_yield
+    }
+
+    user_accounts[username]["balance"] += (nuclear_yield + volcanic_yield)
+
+    return jsonify({"message": "Investment successful!", "total_yield": nuclear_yield + volcanic_yield}), 200
+
+@app.route("/balance", methods=["GET"])
+def check_balance():
+    """
+    Retrieves user balance.
+    """
+    username = request.args.get("username")
+
+    if username not in user_accounts:
+        return jsonify({"error": "User not found!"}), 404
+
+    return jsonify({"username": username, "balance": user_accounts[username]["balance"]}), 200
+
+@app.route("/withdraw", methods=["POST"])
+def withdraw():
+    """
+    Allows user to withdraw funds securely.
+    """
+    data = request.json
+    username = data["username"]
+    amount = float(data["amount"])
+
+    if username not in user_accounts:
+        return jsonify({"error": "User not found!"}), 404
+
+    if user_accounts[username]["balance"] < amount:
+        return jsonify({"error": "Insufficient funds!"}), 400
+
+    user_accounts[username]["balance"] -= amount
+    return jsonify({"message": f"Withdrew {amount} successfully!"}), 200
+
+@app.route("/secure_transaction", methods=["POST"])
+def secure_transaction():
+    """
+    Quantum-secured transactions with encrypted investment data.
+    """
+    data = request.json
+    sender = data["sender"]
+    receiver = data["receiver"]
+    amount = float(data["amount"])
+
+    if sender not in user_accounts or receiver not in user_accounts:
+        return jsonify({"error": "User not found!"}), 404
+
+    if user_accounts[sender]["balance"] < amount:
+        return jsonify({"error": "Insufficient funds!"}), 400
+
+    encrypted_data = quantum_entropy_encrypt(f"{sender}->{receiver}:{amount}")
+    txn_hash = web3.sha3(text=encrypted_data)
+
+    user_accounts[sender]["balance"] -= amount
+    user_accounts[receiver]["balance"] += amount
+
+    return jsonify({"message": "Transaction successful!", "transaction_hash": txn_hash.hex()}), 200
+
+# Run Flask App
+if __name__ == "__main__":
+    app.run(debug=True)
 
 # Flask App Initialization
 app = Flask(__name__)
