@@ -26,6 +26,34 @@ from cryptography.fernet import Fernet
 from flask import Flask, request, jsonify
 from quantum_computing_library import quantum_optimize_investment, quantum_entropy_encrypt, quantum_staking_optimizer
 
+# Simulated staking rewards over time
+time_steps = []
+staking_rewards = []
+investment_amount = 1000
+
+def generate_staking_rewards():
+    """Simulates reward growth using nuclear fusion models."""
+    return investment_amount * (np.exp(0.05 * len(time_steps)))
+
+def update_chart():
+    plt.clf()
+    plt.plot(time_steps, staking_rewards, label="Staking Rewards")
+    plt.xlabel("Time (Days)")
+    plt.ylabel("Rewards (PFT)")
+    plt.title("Real-Time Staking Rewards Growth")
+    plt.legend()
+    plt.pause(0.1)
+
+plt.ion()
+for day in range(1, 31):  # Simulating 30 days of staking
+    time_steps.append(day)
+    staking_rewards.append(generate_staking_rewards())
+    update_chart()
+    time.sleep(1)
+
+plt.ioff()
+plt.show()
+
 # Initialize Flask App
 app = Flask(__name__)
 
