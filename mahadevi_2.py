@@ -602,3 +602,83 @@ def calculate_volume_of_prism(self, base_area, height):
     def calculate_cartesian_coordinates_of_polygon(self, spherical_coordinates):
         """Convert spherical coordinates of polygon to Cartesian."""
         return np.array([self.compute_cartesian_coordinates(coord) for coord in spherical_coordinates])
+
+    def check_if_point_is_in_polyhedron(self, point, vertices):
+        """Check if a point is inside a polyhedron defined by vertices."""
+        hull = ConvexHull(vertices)
+        new_points = np.vstack([vertices, point])
+        new_hull = ConvexHull(new_points)
+        return np.array_equal(hull.vertices, new_hull.vertices)
+
+    def calculate_volume_of_polyhedron(self, vertices):
+        """Calculate the volume of a convex polyhedron using ConvexHull."""
+        hull = ConvexHull(vertices)
+        return hull.volume
+
+    def calculate_signed_volume_of_polyhedron(self, vertices):
+        """Compute the signed volume of a polyhedron using tetrahedral decomposition."""
+        volume = 0
+        for i in range(len(vertices) - 2):
+            volume += np.dot(vertices[i], self.cross_product(vertices[i + 1], vertices[i + 2])) / 6
+        return volume
+
+    def calculate_distance_between_points_and_polyhedron(self, points, vertices):
+        """Compute distance from each point to the polyhedron (returns 0 if inside)."""
+        distances = []
+        for point in points:
+            if self.check_if_point_is_in_polyhedron(point, vertices):
+                distances.append(0)
+            else:
+                normal = self.compute_normal_vector_to_plane(vertices[0], vertices[1], vertices[2])
+                distances.append(self.distance_from_point_to_plane(point, vertices[0], normal))
+        return distances
+
+    def calculate_distance_between_tetrahedron_and_point(self, vertices, point):
+        """Calculate the shortest distance from a point to a tetrahedron."""
+        if self.check_if_point_is_in_polyhedron(point, vertices):
+            return 0
+        else:
+            return min(
+                self.distance_from_point_to_plane(point, vertices[i],
+                    self.compute_normal_vector_to_plane(vertices[i], vertices[j], vertices[k]))
+                for i in range(4) for j in range(i+1, 4) for k in range(j+1, 4)
+            )
+
+    def calculate_area_of_tetrahedron(self, vertices):
+        """Calculate total surface area of tetrahedron (sum of all triangle faces)."""
+        return sum(
+            self.area_of_triangle(vertices[i], vertices[j], vertices[k])
+            for i in range(4) for j in range(i+1, 4) for k in range(j+1, 4)
+        )
+
+    def calculate_intersection_of_lines(self, line1_point1, line1_point2, line2_point1, line2_point2):
+        """Calculate the intersection point of two lines in space if they intersect."""
+        A = np.array([line1_point2 - line1_point1, line2_point1 - line2_point2]).T
+        b = line2_point1 - line1_point1
+        if np.linalg.matrix_rank(A) < 2:
+            return None  # Lines are parallel or coincident
+        t = np.linalg.lstsq(A, b, rcond=None)[0]
+        return line1_point1 + t[0] * (line1_point2 - line1_point1)
+
+    def compute_intersection_of_two_planes(self, normal_a, d_a, normal_b, d_b):
+        """Compute line of intersection of two planes."""
+        direction = self.cross_product(normal_a, normal_b)
+        if np.allclose(direction, 0):
+            return None  # Planes are parallel
+        A = np.array([normal_a, normal_b])
+        b = np.array([d_a, d_b])
+        point_on_line = np.linalg.lstsq(A, b, rcond=None)[0]
+        return point_on_line, direction
+
+    def compute_distance_between_point_and_plane(self, point, plane_normal, plane_d):
+        """Distance from point to plane defined by normal and offset (Ax + By + Cz + D = 0)."""
+        return abs(self.dot_product(point, plane_normal) + plane_d) / self.compute_vector_magnitude(plane_normal)
+
+    def calculate_determinant_of_submatrix(self, matrix, rows, cols):
+        """Compute determinant of a submatrix defined by row and column indices."""
+        submatrix = matrix[np.ix_(rows, cols)]
+        return np.linalg.det(submatrix)
+
+    def compute_bilinear_form(self, matrix, vector_a, vector_b):
+        """Compute bilinear form aᵀMb."""
+        return self.dot_product(vector_a, self.matrix_multiplication(matrix, vector_b))
