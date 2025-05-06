@@ -419,3 +419,104 @@ class Mahadevi:
         vector_a = self.subtract_vectors(point2, point1)
         vector_b = self.subtract_vectors(point3, point1)
         return self.cross_product(vector_a, vector_b)
+
+def calculate_volume_of_prism(self, base_area, height):
+        """Calculate the volume of a prism given its base area and height."""
+        return base_area * height
+
+    def calculate_surface_area_of_prism(self, base_area, perimeter, height):
+        """Calculate the surface area of a prism."""
+        return 2 * base_area + perimeter * height
+
+    def calculate_volume_of_pyramid(self, base_area, height):
+        """Calculate the volume of a pyramid."""
+        return (1 / 3) * base_area * height
+
+    def calculate_surface_area_of_pyramid(self, base_area, slant_height, base_perimeter):
+        """Calculate the surface area of a pyramid."""
+        return base_area + (base_perimeter * slant_height) / 2
+
+    def calculate_volume_of_cone(self, radius, height):
+        """Calculate the volume of a cone."""
+        return (1 / 3) * np.pi * radius**2 * height
+
+    def calculate_surface_area_of_cone(self, radius, slant_height):
+        """Calculate the surface area of a cone."""
+        return np.pi * radius * (radius + slant_height)
+
+    def calculate_volume_of_cylinder(self, radius, height):
+        """Calculate the volume of a cylinder."""
+        return np.pi * radius**2 * height
+
+    def calculate_surface_area_of_cylinder(self, radius, height):
+        """Calculate the surface area of a cylinder."""
+        return 2 * np.pi * radius * (radius + height)
+
+    def calculate_volume_of_sphere(self, radius):
+        """Calculate the volume of a sphere."""
+        return (4 / 3) * np.pi * radius**3
+
+    def calculate_surface_area_of_sphere(self, radius):
+        """Calculate the surface area of a sphere."""
+        return 4 * np.pi * radius**2
+
+    def calculate_volume_of_torus(self, major_radius, minor_radius):
+        """Calculate the volume of a torus."""
+        return (2 * np.pi * minor_radius) * (np.pi * major_radius**2)
+
+    def calculate_surface_area_of_torus(self, major_radius, minor_radius):
+        """Calculate the surface area of a torus."""
+        return (2 * np.pi * minor_radius) * (2 * np.pi * major_radius)
+
+    def calculate_volume_of_ellipsoid(self, semi_major_axis, semi_minor_axis):
+        """Calculate the volume of an ellipsoid."""
+        return (4 / 3) * np.pi * semi_major_axis * semi_minor_axis**2
+
+    def calculate_surface_area_of_ellipsoid(self, semi_major_axis, semi_minor_axis):
+        """Approximate surface area of ellipsoid using Knud Thomsen's formula."""
+        p = 1.6075
+        a = semi_major_axis
+        b = semi_minor_axis
+        return 4 * np.pi * ((a**p * b**p)**(1/p))
+
+    def calculate_volume_of_tetrahedron(self, vertices):
+        """Calculate the volume of a tetrahedron defined by four vertices."""
+        return abs(np.linalg.det(np.hstack((vertices, np.ones((4, 1))))) / 6)
+
+    def calculate_volume_of_frustum(self, base_area1, base_area2, height):
+        """Volume of frustum (trapezoidal prism shape)."""
+        return (1 / 3) * height * (base_area1 + base_area2 + np.sqrt(base_area1 * base_area2))
+
+    def calculate_surface_area_of_frustum(self, base_area1, base_area2, slant_height):
+        """Surface area of frustum using base areas and slant height."""
+        return base_area1 + base_area2 + (base_area1 + base_area2) * slant_height
+
+    def calculate_volume_of_spherical_cap(self, radius, height):
+        """Calculate the volume of a spherical cap."""
+        return (1 / 3) * np.pi * height**2 * (3 * radius - height)
+
+    def calculate_surface_area_of_spherical_cap(self, radius, height):
+        """Surface area of a spherical cap."""
+        return 2 * np.pi * radius * height
+
+    def calculate_volume_of_polygonal_prism(self, vertices, height):
+        """Volume of prism with polygonal base."""
+        base_area = self.compute_area_of_polygon(vertices)
+        return base_area * height
+
+    def calculate_surface_area_of_polygonal_prism(self, vertices, height):
+        """Surface area of prism with polygonal base."""
+        base_area = self.compute_area_of_polygon(vertices)
+        perimeter = np.sum([
+            self.distance_between_points(vertices[i], vertices[(i + 1) % len(vertices)])
+            for i in range(len(vertices))
+        ])
+        return 2 * base_area + perimeter * height
+
+    def calculate_volume_of_polygonal_frustum(self, base_area1, base_area2, height):
+        """Volume of polygonal frustum."""
+        return (1 / 3) * height * (base_area1 + base_area2 + np.sqrt(base_area1 * base_area2))
+
+    def calculate_surface_area_of_polygonal_frustum(self, base_area1, base_area2, slant_height):
+        """Surface area of polygonal frustum."""
+        return base_area1 + base_area2 + (base_area1 + base_area2) * slant_height
