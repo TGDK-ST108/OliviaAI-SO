@@ -7,84 +7,308 @@ class Mahadevi:
         self.vector_field = []
 
     def set_vector_field(self, vectors):
+        """Set the vector field with a list of vectors."""
         self.vector_field = vectors
 
+    def clear_vector_field(self):
+        """Clear the vector field."""
+        self.vector_field = []
+
     def list_vector_field(self):
-        for i, v in enumerate(self.vector_field):
-            print(f"Vector {i}: {v}")
+        """List all vectors in the vector field."""
+        print("Current Vector Field:")
+        for i, vector in enumerate(self.vector_field):
+            print(f"Vector {i}: {vector}")
 
-    def add_vectors(self, a, b): return np.add(a, b)
-    def subtract_vectors(self, a, b): return np.subtract(a, b)
-    def dot_product(self, a, b): return np.dot(a, b)
-    def cross_product(self, a, b): return np.cross(a, b)
-    def scalar_multiply(self, v, s): return np.multiply(v, s)
-    def compute_vector_magnitude(self, v): return np.linalg.norm(v)
-    def normalize_vector(self, v):
-        mag = self.compute_vector_magnitude(v)
-        if mag == 0: raise ValueError("Zero vector")
-        return v / mag
-    def angle_between_vectors(self, a, b): 
-        return np.degrees(np.arccos(self.dot_product(a, b) / (self.compute_vector_magnitude(a) * self.compute_vector_magnitude(b))))
-    def project_vector_onto_vector(self, a, b):
-        unit_b = self.normalize_vector(b)
-        return self.dot_product(a, unit_b) * unit_b
-    def reflect_vector(self, v, normal):
-        return v - 2 * self.dot_product(v, normal) * normal
-    def transpose_matrix(self, m): return np.transpose(m)
-    def matrix_multiplication(self, a, b): return np.matmul(a, b)
-    def inverse_matrix(self, m): return np.linalg.inv(m)
-    def determinant_matrix(self, m): return np.linalg.det(m)
-    def eigenvalues_and_vectors(self, m): return np.linalg.eig(m)
-    def matrix_rank(self, m): return np.linalg.matrix_rank(m)
-    def mean_vector(self, v): return np.mean(v)
-    def median_vector(self, v): return np.median(v)
-    def variance_vector(self, v): return np.var(v)
-    def standard_deviation_vector(self, v): return np.std(v)
-    def correlation_coefficient(self, a, b): return np.corrcoef(a, b)[0,1]
-    def distance_between_points(self, a, b): return np.linalg.norm(np.subtract(a, b))
-    def point_in_polygon(self, point, polygon): return Path(polygon).contains_point(point)
-    def project_vector_onto_plane(self, v, normal): return v - self.project_vector_onto_vector(v, normal)
-    def generate_random_vector(self, size): return np.random.rand(size)
-    def rotate_vector(self, v, angle_deg):
-        theta = np.radians(angle_deg)
-        rot = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
-        return np.dot(rot, v)
-    def singular_value_decomposition(self, m): return np.linalg.svd(m)
-    def solve_linear_system(self, A, b): return np.linalg.solve(A, b)
-    def compute_area_of_polygon(self, vertices):
-        v = np.array(vertices)
-        return 0.5 * np.abs(np.dot(v[:, 0], np.roll(v[:, 1], 1)) - np.dot(v[:, 1], np.roll(v[:, 0], 1)))
-    def clear_vector_field(self): self.vector_field = []
-    def scale_vector_field(self, scalar): self.vector_field = [self.scalar_multiply(v, scalar) for v in self.vector_field]
-    def apply_function_to_vector_field(self, func): self.vector_field = [func(v) for v in self.vector_field]
-    def find_closest_vector(self, target): return min(self.vector_field, key=lambda v: self.compute_vector_magnitude(self.subtract_vectors(v, target)))
-    def concatenate_vectors(self, a, b): return np.concatenate((a, b))
-    def stack_matrices_vertically(self, a, b): return np.vstack((a, b))
-    def stack_matrices_horizontally(self, a, b): return np.hstack((a, b))
-    def find_vector_index(self, vector): 
-        try: return self.vector_field.index(vector)
-        except ValueError: return -1
-    def remove_vector(self, vector): 
-        idx = self.find_vector_index(vector)
-        if idx != -1: del self.vector_field[idx]
-    def random_sample_from_vector_field(self, n): return np.random.choice(self.vector_field, n, replace=False)
-    def shuffle_vector_field(self): np.random.shuffle(self.vector_field)
-    def save_vector_field(self, fname): np.savetxt(fname, self.vector_field)
-    def load_vector_field(self, fname): self.vector_field = np.loadtxt(fname).tolist()
-    def apply_transformation(self, T):
-        self.vector_field = [self.matrix_multiplication(T, np.array(v).reshape(-1, 1)).flatten().tolist() for v in self.vector_field]
-    def create_identity_matrix(self, size): return np.eye(size)
-    def check_matrix_square(self, m): return m.shape[0] == m.shape[1]
-    def flatten_matrix(self, m): return m.flatten()
-    def generate_diagonal_matrix(self, elems): return np.diag(elems)
-    def check_matrix_symmetry(self, m): return np.allclose(m, m.T)
-    def is_invertible(self, m): return np.linalg.cond(m) < 1 / np.finfo(m.dtype).eps
-    def calculate_trace_of_matrix(self, m): return np.trace(m)
-    def calculate_covariance_matrix(self, v): return np.cov(np.array(v).T)
-    def calculate_correlation_matrix(self, v): return np.corrcoef(np.array(v).T)
-    def create_column_vector(self, elems): return np.array(elems).reshape(-1, 1)
-    def create_row_vector(self, elems): return np.array(elems).reshape(1, -1)
-    def compute_area_of_triangle(self, a, b, c): return 0.5 * self.compute_vector_magnitude(self.cross_product(self.subtract_vectors(b, a), self.subtract_vectors(c, a)))
-    def distance_from_point_to_plane(self, p, plane_p, plane_n): return abs(self.dot_product(self.subtract_vectors(p, plane_p), self.normalize_vector(plane_n)))
+    def print_vector_field_info(self):
+        """Print details of vectors in the field."""
+        print(f"Total vectors in the field: {len(self.vector_field)}")
+        for i, vector in enumerate(self.vector_field):
+            print(f"Vector {i}: {vector}, Magnitude: {self.compute_vector_magnitude(vector)}")
 
-    # More methods exist – truncated for brevity
+    def save_vector_field(self, filename):
+        """Save the vector field to a file."""
+        np.savetxt(filename, self.vector_field)
+        print(f"Vector field saved to '{filename}'.")
+
+    def load_vector_field(self, filename):
+        """Load the vector field from a file."""
+        self.vector_field = np.loadtxt(filename).tolist()
+        print(f"Vector field loaded from '{filename}'.")
+
+# Vector Operations
+    def add_vectors(self, vector_a, vector_b):
+        """Add two vectors."""
+        return np.add(vector_a, vector_b)
+
+    def subtract_vectors(self, vector_a, vector_b):
+        """Subtract vector b from vector a."""
+        return np.subtract(vector_a, vector_b)
+
+    def scalar_multiply(self, vector, scalar):
+        """Multiply a vector by a scalar."""
+        return np.multiply(vector, scalar)
+
+    def dot_product(self, vector_a, vector_b):
+        """Calculate the dot product of two vectors."""
+        return np.dot(vector_a, vector_b)
+
+    def cross_product(self, vector_a, vector_b):
+        """Calculate the cross product of two 3D vectors."""
+        return np.cross(vector_a, vector_b)
+
+    def compute_vector_magnitude(self, vector):
+        """Compute the magnitude (length) of a vector."""
+        return np.linalg.norm(vector)
+
+    def normalize_vector(self, vector):
+        """Normalize a vector to unit length."""
+        magnitude = self.compute_vector_magnitude(vector)
+        if magnitude == 0:
+            raise ValueError("Cannot normalize the zero vector.")
+        return vector / magnitude
+
+    def angle_between_vectors(self, vector_a, vector_b):
+        """Calculate the angle between two vectors in degrees."""
+        dot_product = self.dot_product(vector_a, vector_b)
+        magnitudes = self.compute_vector_magnitude(vector_a) * self.compute_vector_magnitude(vector_b)
+        return np.degrees(np.arccos(dot_product / magnitudes))
+
+    def compute_angle_between_vectors(self, vector_a, vector_b):
+        """Calculate the angle between two vectors in radians."""
+        dot_product = self.dot_product(vector_a, vector_b)
+        magnitudes = self.compute_vector_magnitude(vector_a) * self.compute_vector_magnitude(vector_b)
+        return np.arccos(dot_product / magnitudes)
+
+    def is_orthogonal(self, vector_a, vector_b):
+        """Check if two vectors are orthogonal (dot product = 0)."""
+        return np.isclose(self.dot_product(vector_a, vector_b), 0)
+
+    def is_parallel(self, vector_a, vector_b):
+        """Check if two vectors are parallel."""
+        return np.allclose(self.cross_product(vector_a, vector_b), 0)
+
+    def project_vector_onto_vector(self, vector_a, vector_b):
+        """Project vector_a onto vector_b."""
+        unit_b = self.normalize_vector(vector_b)
+        return self.dot_product(vector_a, unit_b) * unit_b
+
+    def project_vector_onto_plane(self, vector, normal):
+        """Project a vector onto a plane defined by a normal vector."""
+        return vector - self.project_vector_onto_vector(vector, normal)
+
+    def reflect_vector(self, vector, normal):
+        """Reflect a vector across a given normal vector."""
+        return vector - 2 * self.dot_product(vector, normal) * normal
+
+    def generate_random_vector(self, size):
+        """Generate a random vector of specified size."""
+        return np.random.rand(size)
+
+    def generate_unit_vector(self, size):
+        """Generate a random unit vector of specified size."""
+        return self.normalize_vector(self.generate_random_vector(size))
+
+    def rotate_vector(self, vector, angle):
+        """Rotate a 2D vector by a specified angle in degrees."""
+        theta = np.radians(angle)
+        rotation_matrix = np.array([[np.cos(theta), -np.sin(theta)],
+                                    [np.sin(theta),  np.cos(theta)]])
+        return np.dot(rotation_matrix, vector)
+
+# Matrix Operations
+    def transpose_matrix(self, matrix):
+        """Transpose a given matrix."""
+        return np.transpose(matrix)
+
+    def matrix_multiplication(self, matrix_a, matrix_b):
+        """Multiply two matrices."""
+        return np.matmul(matrix_a, matrix_b)
+
+    def inverse_matrix(self, matrix):
+        """Calculate the inverse of a matrix."""
+        return np.linalg.inv(matrix)
+
+    def determinant_matrix(self, matrix):
+        """Calculate the determinant of a matrix."""
+        return np.linalg.det(matrix)
+
+    def eigenvalues_and_vectors(self, matrix):
+        """Calculate eigenvalues and eigenvectors of a matrix."""
+        return np.linalg.eig(matrix)
+
+    def matrix_rank(self, matrix):
+        """Calculate the rank of a matrix."""
+        return np.linalg.matrix_rank(matrix)
+
+    def create_identity_matrix(self, size):
+        """Create an identity matrix of a given size."""
+        return np.eye(size)
+
+    def check_matrix_square(self, matrix):
+        """Check if a matrix is square."""
+        return matrix.shape[0] == matrix.shape[1]
+
+    def flatten_matrix(self, matrix):
+        """Flatten a 2D matrix into a 1D array."""
+        return matrix.flatten()
+
+    def generate_diagonal_matrix(self, diagonal_elements):
+        """Generate a diagonal matrix from a list of diagonal elements."""
+        return np.diag(diagonal_elements)
+
+    def check_matrix_symmetry(self, matrix):
+        """Check if a matrix is symmetric."""
+        return np.allclose(matrix, matrix.T)
+
+    def is_invertible(self, matrix):
+        """Check if a matrix is invertible."""
+        return np.linalg.cond(matrix) < 1 / np.finfo(matrix.dtype).eps
+
+    def calculate_trace_of_matrix(self, matrix):
+        """Calculate the trace of a matrix."""
+        return np.trace(matrix)
+
+    def calculate_covariance_matrix(self, vectors):
+        """Calculate the covariance matrix from a list of vectors."""
+        return np.cov(np.array(vectors).T)
+
+    def calculate_correlation_matrix(self, vectors):
+        """Calculate the correlation matrix from a list of vectors."""
+        return np.corrcoef(np.array(vectors).T)
+
+    def calculate_adjoint_matrix(self, matrix):
+        """Calculate the adjoint of a matrix."""
+        return np.linalg.inv(matrix).T * np.linalg.det(matrix)
+
+    def calculate_symmetric_part(self, matrix):
+        """Calculate the symmetric part of a matrix."""
+        return 0.5 * (matrix + matrix.T)
+
+    def calculate_skew_symmetric_part(self, matrix):
+        """Calculate the skew-symmetric part of a matrix."""
+        return 0.5 * (matrix - matrix.T)
+
+    def compute_kronecker_product(self, matrix_a, matrix_b):
+        """Compute the Kronecker product of two matrices."""
+        return np.kron(matrix_a, matrix_b)
+
+    def compute_hadamard_product(self, matrix_a, matrix_b):
+        """Compute the Hadamard product of two matrices."""
+        return np.multiply(matrix_a, matrix_b)
+
+    def calculate_cholesky_decomposition(self, matrix):
+        """Calculate the Cholesky decomposition of a positive definite matrix."""
+        return np.linalg.cholesky(matrix)
+
+    def compute_pseudo_inverse(self, matrix):
+        """Compute the pseudo-inverse of a matrix."""
+        return np.linalg.pinv(matrix)
+
+    def calculate_matrix_product(self, matrix_a, matrix_b):
+        """Calculate the product of two matrices."""
+        return self.matrix_multiplication(matrix_a, matrix_b)
+
+    def calculate_matrix_square(self, matrix):
+        """Calculate the square of a matrix."""
+        return self.matrix_multiplication(matrix, matrix)
+
+    def generate_permutation_matrix(self, n):
+        """Generate a random permutation matrix of size n."""
+        return np.eye(n)[np.random.permutation(n)]
+
+    def rotate_matrix(self, matrix, angle):
+        """Rotate a 2D matrix by a given angle in degrees."""
+        theta = np.radians(angle)
+        rotation_matrix = np.array([[np.cos(theta), -np.sin(theta)],
+                                    [np.sin(theta),  np.cos(theta)]])
+        return self.matrix_multiplication(rotation_matrix, matrix)
+
+    def check_if_matrix_is_stochastic(self, matrix):
+        """Check if a matrix is stochastic (rows sum to 1)."""
+        return np.allclose(np.sum(matrix, axis=1), 1)
+
+    def check_if_matrix_is_positive_definite(self, matrix):
+        """Check if a matrix is positive definite."""
+        return np.all(np.linalg.eigvals(matrix) > 0)
+
+    def calculate_condition_number(self, matrix):
+        """Calculate the condition number of a matrix."""
+        return np.linalg.cond(matrix)
+
+    def calculate_frobenius_norm(self, matrix):
+        """Calculate the Frobenius norm of a matrix."""
+        return np.linalg.norm(matrix, 'fro')
+
+    def calculate_distance_between_matrices(self, matrix_a, matrix_b):
+        """Compute the Frobenius distance between two matrices."""
+        return np.linalg.norm(matrix_a - matrix_b, 'fro')
+
+# Statistical Operations
+    def mean_vector(self, vector):
+        """Calculate the mean of a vector."""
+        return np.mean(vector)
+
+    def median_vector(self, vector):
+        """Calculate the median of a vector."""
+        return np.median(vector)
+
+    def variance_vector(self, vector):
+        """Calculate the variance of a vector."""
+        return np.var(vector)
+
+    def standard_deviation_vector(self, vector):
+        """Calculate the standard deviation of a vector."""
+        return np.std(vector)
+
+    def correlation_coefficient(self, vector_a, vector_b):
+        """Calculate the correlation coefficient between two vectors."""
+        return np.corrcoef(vector_a, vector_b)[0, 1]
+
+    def compute_geometric_mean(self, vector):
+        """Calculate the geometric mean of a vector."""
+        return np.prod(vector) ** (1 / len(vector))
+
+    def compute_harmonic_mean(self, vector):
+        """Calculate the harmonic mean of a vector."""
+        return len(vector) / np.sum(1.0 / np.array(vector))
+
+    # Projection Operations
+    def project_vector_onto_vector(self, vector_a, vector_b):
+        """Project vector a onto vector b."""
+        unit_b = self.normalize_vector(vector_b)
+        return self.dot_product(vector_a, unit_b) * unit_b
+
+    def project_vector_onto_plane(self, vector, normal):
+        """Project a vector onto a plane defined by a normal vector."""
+        return vector - self.project_vector_onto_vector(vector, normal)
+
+    def distance_from_point_to_line(self, point, line_point1, line_point2):
+        """Calculate the distance from a point to a line segment."""
+        line_vec = self.subtract_vectors(line_point2, line_point1)
+        point_vec = self.subtract_vectors(point, line_point1)
+        line_len = self.compute_vector_magnitude(line_vec)
+        line_unit_vec = self.normalize_vector(line_vec)
+        projection = self.dot_product(point_vec, line_unit_vec)
+        return self.compute_vector_magnitude(self.subtract_vectors(point_vec, line_unit_vec * projection))
+
+    def calculate_inner_product(self, vector_a, vector_b):
+        """Calculate the inner product of two vectors."""
+        return np.inner(vector_a, vector_b)
+
+    def calculate_outer_product(self, vector_a, vector_b):
+        """Calculate the outer product of two vectors."""
+        return np.outer(vector_a, vector_b)
+
+    def calculate_distance_from_point_to_subspace(self, point, subspace_basis):
+        """Calculate the distance from a point to a subspace defined by a basis."""
+        projection = np.sum([self.project_vector_onto_vector(point, basis) for basis in subspace_basis], axis=0)
+        return self.compute_vector_magnitude(self.subtract_vectors(point, projection))
+
+    def calculate_vector_projection(self, vector_a, vector_b):
+        """Compute the vector projection of vector_a onto vector_b."""
+        return self.project_vector_onto_vector(vector_a, vector_b)
+
+    def check_if_vectors_are_coplanar(self, vector_a, vector_b, vector_c):
+        """Check if three vectors are coplanar."""
+        return np.isclose(self.dot_product(self.cross_product(vector_a, vector_b), vector_c), 0)
