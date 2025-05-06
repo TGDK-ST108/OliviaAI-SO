@@ -312,3 +312,110 @@ class Mahadevi:
     def check_if_vectors_are_coplanar(self, vector_a, vector_b, vector_c):
         """Check if three vectors are coplanar."""
         return np.isclose(self.dot_product(self.cross_product(vector_a, vector_b), vector_c), 0)
+
+# Geometric and Spatial Operations
+    def distance_between_points(self, point_a, point_b):
+        """Calculate the Euclidean distance between two points."""
+        return np.linalg.norm(np.subtract(point_a, point_b))
+
+    def area_of_triangle(self, vertex_a, vertex_b, vertex_c):
+        """Calculate the area of a triangle using its vertices."""
+        ab = self.subtract_vectors(vertex_b, vertex_a)
+        ac = self.subtract_vectors(vertex_c, vertex_a)
+        return 0.5 * self.compute_vector_magnitude(self.cross_product(ab, ac))
+
+    def compute_area_of_polygon(self, vertices):
+        """Calculate the area of a polygon using the Shoelace formula."""
+        vertices = np.array(vertices)
+        return 0.5 * np.abs(np.dot(vertices[:, 0], np.roll(vertices[:, 1], 1)) -
+                            np.dot(vertices[:, 1], np.roll(vertices[:, 0], 1)))
+
+    def calculate_signed_area_of_polygon(self, vertices):
+        """Calculate the signed area of a polygon defined by its vertices."""
+        vertices = np.array(vertices)
+        n = len(vertices)
+        area = 0.0
+        for i in range(n):
+            j = (i + 1) % n
+            area += vertices[i][0] * vertices[j][1] - vertices[j][0] * vertices[i][1]
+        return 0.5 * area
+
+    def calculate_area_of_triangle_from_coordinates(self, vertex_a, vertex_b, vertex_c):
+        """Calculate the area of a triangle given its vertices."""
+        return 0.5 * np.abs((vertex_a[0] * (vertex_b[1] - vertex_c[1]) +
+                             vertex_b[0] * (vertex_c[1] - vertex_a[1]) +
+                             vertex_c[0] * (vertex_a[1] - vertex_b[1])))
+
+    def area_of_parallelogram(self, vertex_a, vertex_b, vertex_c):
+        """Calculate the area of a parallelogram given its vertices."""
+        ab = self.subtract_vectors(vertex_b, vertex_a)
+        ac = self.subtract_vectors(vertex_c, vertex_a)
+        return self.compute_vector_magnitude(self.cross_product(ab, ac))
+
+    def point_in_polygon(self, point, polygon):
+        """Check if a point is inside a given polygon."""
+        path = Path(polygon)
+        return path.contains_point(point)
+
+    def calculate_centroid_of_polygon(self, vertices):
+        """Calculate the centroid of a polygon defined by its vertices."""
+        vertices = np.array(vertices)
+        x = vertices[:, 0]
+        y = vertices[:, 1]
+        A = 0.5 * (np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
+        C_x = (1 / (6 * A)) * np.dot(x + np.roll(x, 1), np.roll(y, 1) - y)
+        C_y = (1 / (6 * A)) * np.dot(y + np.roll(y, 1), x - np.roll(x, 1))
+        return np.array([C_x, C_y])
+
+    def calculate_center_of_mass_of_polygon(self, vertices):
+        """Calculate the center of mass of a polygon defined by its vertices."""
+        area = self.compute_area_of_polygon(vertices)
+        cx = 0
+        cy = 0
+        for i in range(len(vertices)):
+            x_i, y_i = vertices[i]
+            x_next, y_next = vertices[(i + 1) % len(vertices)]
+            common = x_i * y_next - x_next * y_i
+            cx += (x_i + x_next) * common
+            cy += (y_i + y_next) * common
+        cx /= (6 * area)
+        cy /= (6 * area)
+        return np.array([cx, cy])
+
+    def calculate_barycentric_coordinates(self, point, vertices):
+        """Calculate the barycentric coordinates of a point w.r.t. triangle vertices."""
+        a, b, c = vertices
+        v0 = b - a
+        v1 = c - a
+        v2 = point - a
+        d00 = np.dot(v0, v0)
+        d01 = np.dot(v0, v1)
+        d11 = np.dot(v1, v1)
+        d20 = np.dot(v2, v0)
+        d21 = np.dot(v2, v1)
+        denom = d00 * d11 - d01 * d01
+        v = (d11 * d20 - d01 * d21) / denom
+        w = (d00 * d21 - d01 * d20) / denom
+        return np.array([1 - v - w, v, w])
+
+    def calculate_closest_point_on_line_segment(self, point, line_point1, line_point2):
+        """Calculate the closest point on a line segment to a given point."""
+        line_vec = self.subtract_vectors(line_point2, line_point1)
+        t = self.dot_product(self.subtract_vectors(point, line_point1), line_vec) / self.dot_product(line_vec, line_vec)
+        if t < 0:
+            return line_point1
+        elif t > 1:
+            return line_point2
+        else:
+            return line_point1 + t * line_vec
+
+    def calculate_dihedral_angle(self, normal_a, normal_b):
+        """Calculate the dihedral angle between two planes defined by their normals."""
+        cosine_angle = self.dot_product(normal_a, normal_b) / (self.compute_vector_magnitude(normal_a) * self.compute_vector_magnitude(normal_b))
+        return np.arccos(cosine_angle)
+
+    def compute_normal_vector_to_plane(self, point1, point2, point3):
+        """Compute the normal vector to a plane defined by three points."""
+        vector_a = self.subtract_vectors(point2, point1)
+        vector_b = self.subtract_vectors(point3, point1)
+        return self.cross_product(vector_a, vector_b)
