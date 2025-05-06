@@ -520,3 +520,85 @@ def calculate_volume_of_prism(self, base_area, height):
     def calculate_surface_area_of_polygonal_frustum(self, base_area1, base_area2, slant_height):
         """Surface area of polygonal frustum."""
         return base_area1 + base_area2 + (base_area1 + base_area2) * slant_height
+
+# Moment of Inertia Calculations
+    def calculate_moment_of_inertia_of_circle(self, radius):
+        """Moment of inertia of a circle about its center."""
+        return 0.5 * np.pi * radius**4
+
+    def calculate_moment_of_inertia_of_rectangle(self, width, height):
+        """Moment of inertia of a rectangle about its base."""
+        return (1 / 12) * width * height**3
+
+    def calculate_moment_of_inertia_of_triangle(self, base, height):
+        """Moment of inertia of a triangle about its base."""
+        return (1 / 36) * base * height**3
+
+    def calculate_moment_of_inertia_of_solid_sphere(self, radius):
+        """Moment of inertia of a solid sphere."""
+        return (2 / 5) * ((4 / 3) * np.pi * radius**3) * radius**2
+
+    def calculate_moment_of_inertia_of_cylinder(self, radius, height):
+        """Moment of inertia of a solid cylinder."""
+        return (1 / 12) * np.pi * radius**2 * height * (3 * radius**2 + height**2)
+
+    def calculate_moment_of_inertia_of_pyramid(self, base_area, height):
+        """Approximate moment of inertia of a pyramid."""
+        return (1 / 10) * base_area * height**2
+
+    def calculate_moments_of_inertia_of_polygonal_shape(self, vertices):
+        """Approximate moments of inertia for a polygonal 2D shape."""
+        I_x = 0
+        I_y = 0
+        A = self.compute_area_of_polygon(vertices)
+        for i in range(len(vertices)):
+            j = (i + 1) % len(vertices)
+            I_x += (vertices[i][1]**2 + vertices[j][1]**2) * (vertices[j][0] - vertices[i][0])
+            I_y += (vertices[i][0]**2 + vertices[j][0]**2) * (vertices[j][1] - vertices[i][1])
+        return (1 / 12) * A, (1 / 12) * A
+
+    def calculate_inertia_tensor(self, vertices):
+        """Calculate the inertia tensor of a polygon."""
+        inertia_tensor = np.zeros((2, 2))
+        vertices = np.array(vertices)
+        for i in range(len(vertices)):
+            v = vertices[i]
+            next_v = vertices[(i + 1) % len(vertices)]
+            cross = np.cross(v, next_v)
+            inertia_tensor += (cross / 2) * (np.outer(v, v) + np.outer(v, next_v) + np.outer(next_v, next_v))
+        return inertia_tensor
+
+    # Coordinate Conversions
+    def calculate_polar_coordinates(self, point):
+        """Convert Cartesian to polar coordinates."""
+        r = np.sqrt(point[0]**2 + point[1]**2)
+        theta = np.arctan2(point[1], point[0])
+        return np.array([r, theta])
+
+    def calculate_cartesian_coordinates_from_polar(self, polar_coordinates):
+        """Convert polar to Cartesian coordinates."""
+        r, theta = polar_coordinates
+        return np.array([r * np.cos(theta), r * np.sin(theta)])
+
+    def compute_spherical_coordinates(self, point):
+        """Convert Cartesian to spherical coordinates."""
+        r = self.compute_vector_magnitude(point)
+        theta = np.arccos(point[2] / r)
+        phi = np.arctan2(point[1], point[0])
+        return np.array([r, theta, phi])
+
+    def compute_cartesian_coordinates(self, spherical_coordinates):
+        """Convert spherical to Cartesian coordinates."""
+        r, theta, phi = spherical_coordinates
+        x = r * np.sin(theta) * np.cos(phi)
+        y = r * np.sin(theta) * np.sin(phi)
+        z = r * np.cos(theta)
+        return np.array([x, y, z])
+
+    def calculate_spherical_coordinates_of_polygon(self, vertices):
+        """Convert polygon vertices to spherical coordinates."""
+        return np.array([self.compute_spherical_coordinates(vertex) for vertex in vertices])
+
+    def calculate_cartesian_coordinates_of_polygon(self, spherical_coordinates):
+        """Convert spherical coordinates of polygon to Cartesian."""
+        return np.array([self.compute_cartesian_coordinates(coord) for coord in spherical_coordinates])
