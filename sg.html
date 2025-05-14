@@ -1,0 +1,38 @@
+<!DOCTYPE html><html>
+<head>
+  <meta charset="utf-8" />
+  <title>Richmond Heatmap - Missing Persons Overlay</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';const map = new mapboxgl.Map({ container: 'map', style: 'mapbox://styles/mapbox/dark-v10', center: [-77.4360, 37.5407], // Richmond, VA zoom: 11 });
+
+map.on('load', function () { map.addSource('missing-persons', { type: 'geojson', data: '/data/richmond_missing_persons.geojson' });
+
+map.addLayer({
+    id: 'heatmap-layer',
+    type: 'heatmap',
+    source: 'missing-persons',
+    maxzoom: 15,
+    paint: {
+        'heatmap-weight': ["interpolate", ["linear"], ["get", "density"], 0, 0, 6, 1],
+        'heatmap-intensity': ["interpolate", ["linear"], ["zoom"], 0, 1, 15, 3],
+        'heatmap-color': [
+            "interpolate",
+            ["linear"],
+            ["heatmap-density"],
+            0, "rgba(0,0,255,0)",
+            0.2, "#2c7bb6",
+            0.4, "#abd9e9",
+            0.6, "#ffffbf",
+            0.8, "#fdae61",
+            1, "#d7191
+
