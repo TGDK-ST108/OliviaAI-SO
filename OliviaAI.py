@@ -111,6 +111,20 @@ def analyze_and_adapt(categories, scores, threshold=8):
     
     return strategies
 
+# Inject this in image cognition pipeline
+def olivia_cognitive_gate(image_input):
+    eclipsor = TetraEclipsor(image_input)
+    eclipsed = eclipsor.apply_eclipsor()
+
+    entropy_rating = OliviaAI.evaluate_entropy_map(eclipsed)
+    glyph_overlay = OliviaAI.extract_symbolic_glyphs(eclipsed)
+    
+    return {
+        "processed_image": eclipsed,
+        "entropy_score": entropy_rating,
+        "symbolic_readout": glyph_overlay
+    }
+
 # Simulated input from analytics
 categories = [
     "Communication Lines", "Backup Availability", "Signal Disruption",
