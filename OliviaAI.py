@@ -10,6 +10,12 @@ class OliviaAI:
 
     # -------------------- Initialization Methods --------------------
 
+    @OliviaAI.intercept
+    def trigger_resonance_insight(sensor_frame):
+        result = IODR_core_process(sensor_frame)
+        if result["vulgarity_risk"]:
+            OliviaAI.broadcast("IODR-α event lock: probable outburst detected. Dispatching psychic dampeners.")
+
     def initialize_vectors(self):
         """Initializes both Military and TGDK vectors with baseline configurations."""
         self.military_vector = {
