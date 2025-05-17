@@ -48,6 +48,10 @@ class OliviaAI:
         vector["quantum_sync_status"] = True
         vector["sequence_load"] += methods
         print(f"{methods} advanced methods applied to vector.")
+       
+       if EmotionVector.entropy > 0.7 and MotionSig.angular_velocity > 3.2:
+        if PAIC.flagged == True and OPRE.polarity == "unstable":
+            trigger_alert("Pre-vulgar event likely within 15s window", risk_score=0.89)
 
     def distribute_across_vectors(self):
         """Distributes OliviaAI across vectors."""
