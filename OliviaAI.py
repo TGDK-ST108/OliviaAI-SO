@@ -121,19 +121,30 @@ def analyze_and_adapt(categories, scores, threshold=8):
     
     return strategies
 
-# Inject this in image cognition pipeline
-def olivia_cognitive_gate(image_input):
-    eclipsor = TetraEclipsor(image_input)
-    eclipsed = eclipsor.apply_eclipsor()
+    def predict_proxy_spawn(domain_candidate):
+        patterns = ["cf-edge", "awsroute", "x-lambda-tunnel"]
+       score = sum(pattern in domain_candidate for pattern in patterns)
+        return score >= 2
 
-    entropy_rating = OliviaAI.evaluate_entropy_map(eclipsed)
-    glyph_overlay = OliviaAI.extract_symbolic_glyphs(eclipsed)
+    future_domains = olivia.predictive_dns_scan("*.ai *.cloud *.net")
+    for d in future_domains:
+        if predict_proxy_spawn(d):
+            firewall.blackhole(d)
+            vault.log_threat("PREEMPTOR_BLOCKED", d)
+
+ # Inject this in image cognition pipeline
+    def olivia_cognitive_gate(image_input):
+        eclipsor = TetraEclipsor(image_input)
+        eclipsed = eclipsor.apply_eclipsor()
+
+        entropy_rating = OliviaAI.evaluate_entropy_map(eclipsed)
+        glyph_overlay = OliviaAI.extract_symbolic_glyphs(eclipsed)
     
-    return {
-        "processed_image": eclipsed,
-        "entropy_score": entropy_rating,
-        "symbolic_readout": glyph_overlay
-    }
+        return {
+            "processed_image": eclipsed,
+            "entropy_score": entropy_rating,
+            "symbolic_readout": glyph_overlay
+        }
 
 # Simulated input from analytics
 categories = [
