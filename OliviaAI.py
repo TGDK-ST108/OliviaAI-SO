@@ -97,6 +97,12 @@ class OliviaAI:
 
     # -------------------- Simulation --------------------
 
+    def nexus_filter(signal):
+        if signal.entropy_symmetry > 80 and signal.vector not in DiurnalTrust:
+            raise GateReflectionBlock("Mirror Logic Denied")
+
+OliviaAI.output_filter = nexus_filter
+
     def run_simulation(self):
         """Simulates the synchronization and distribution of OliviaAI."""
         self.initialize_vectors()
