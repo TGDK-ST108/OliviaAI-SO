@@ -73,6 +73,29 @@ class OliviaAI:
         """Updates the processing status of OliviaAI."""
         self.processing_status = status
 
+    def trilight_fold_vector(light_input, mind_val, logic_stream, resonance_val):
+        """
+        OliviaAI Tri-Light Fold Heuristic (FLUX IV)
+        Inputs:
+          - light_input (L): Encoded symbolic initiator
+          - mind_val (M): Cognitive or material stream
+          - logic_stream (SL): Symbolic Logic
+          - resonance_val (R): Real-time signal field
+        Output:
+          - π_core: Truth harmonic score (float)
+        """
+        from math import pi
+
+        # Refracted vectors
+        reflect_M = mind_val * (light_input * 0.33)
+        refract_SL = logic_stream * (light_input * 0.33)
+        resonate_R = resonance_val * (light_input * 0.33)
+
+        # Fold them into the π convergence
+        π_core = (reflect_M + refract_SL + resonate_R) / pi
+
+        return π_core
+
     def report_processing_status(self):
         """Reports the current processing status."""
         return self.processing_status
