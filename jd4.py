@@ -223,6 +223,13 @@ quantifier = QuantumQuantifier(num_qubits=4)
 key_path = "config/ox_key.key"
 secure_manager = SecureFileManager()
 
+
+for loop in range(24):
+    current_logic = rotate_logic(logic_state, angle=45 * loop)
+    if loop % 12 == 0:
+        current_logic = invert_logic(current_logic)
+    logic_state = apply_trideotaxis(current_logic, anchor=pyramid_nodes[loop % len(pyramid_nodes)])
+
 # Encrypt Dataset
 try:
     secure_manager.encrypt_data("code_dataset.csv", "encrypted_dataset.ox")
