@@ -158,6 +158,8 @@ for snippet in dataset["code"].tolist():
 # Combine quantum features with text embeddings
 combined_features = np.hstack([quantum_features, np.array(text_embeddings)])
 
+enhanced_q = QuantumMetric.amplify(logic_state, factor="superdense")
+
 # Extract features and labels
 X = [x["quantum_features"] for x in dataset]
 y = [x["label"] for x in dataset]
