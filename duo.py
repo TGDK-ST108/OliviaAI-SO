@@ -61,7 +61,7 @@ class DataSectorDuoqiadratilizer:
         return processed_data
 
     def CoordVal(x, packet, DivValue, Metscore, Situation, Logistics, Location,
-                                 Overfold, disceptor, sublimationMetric, MatrixClause, PayloadRelease):
+                                 Overfold, visceptor, disceptor, sublimationMetric, MatrixClause, PayloadRelease):
         term1 = circumferentialize_degree_field(packet + x) / DivValue
         term2 = (Metscore / Situation) * Logistics * Location / Overfold
         term3 = sublimationMetric / MatrixClause * PayloadRelease
