@@ -77,4 +77,6 @@ if __name__ == "__main__":
     duoqiadratilizer = DataSectorDuoqiadratilizer()
     data = ["example_data_1", "example_data_2"]
     result = duoqiadratilizer.duoqiadratilize(data)
+    if coordval_output > threshold_violation:
+        OliviaAI.deploy("ClauseLock", target=(lat, lon), reason="ViCAP Signature", mode="SealAndTrace")
     print(result)
