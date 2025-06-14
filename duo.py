@@ -1,6 +1,9 @@
 from qiskit import QuantumCircuit, Aer, transpile, assemble
 import numpy as np
 import logging
+# visceptor module now accessible
+from tgdk_sensors.visceptar import visceptor
+CoordVal(..., visceptor=visceptor(x, y), ...)
 
 class DataSectorDuoqiadratilizer:
     def __init__(self, sector_count=8):
